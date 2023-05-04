@@ -13,7 +13,6 @@ public class MainWindow extends JFrame {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
-//        this.getContentPane().add(this.menu, BorderLayout.CENTER);
         this.add(this.menu);
 
         this.setVisible(true);

@@ -48,8 +48,6 @@ public class Play extends JPanel {
 
         mainGame = new JPanel();
 
-
-
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
         gbc.gridy = 0;
