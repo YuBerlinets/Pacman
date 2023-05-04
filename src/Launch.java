@@ -20,7 +20,6 @@ public class Launch {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setResizable(false);
         window.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
-//        menuPanel.setLayout(new BoxLayout(menuPanel, BoxLayout.Y_AXIS));
         menuPanel.setLayout(new GridBagLayout());
         windowPanel.setLayout(cardLayout);
 
@@ -53,13 +52,7 @@ public class Launch {
             window.dispose();
         });
 
-        //back button for score panel
-
-        backScoreButton = new MenuButton("Back to Menu");
-        backScoreButton.addActionListener(event -> {
-            cardLayout.show(windowPanel, "menuPanel");
-
-        });
+        //back button for score and play panel
         backPlayButton = new MenuButton("Back to Menu");
         backPlayButton.addActionListener(event -> {
             cardLayout.show(windowPanel, "menuPanel");
@@ -73,12 +66,10 @@ public class Launch {
         buttons.add(exitButton);
 
         //adding panels to the frame
-        //menuPanel.add(information);
         menuPanel.add(buttons);
         menuPanel.setBackground(Color.BLACK);
 
         playPanel.add(backPlayButton);
-        scorePanel.add(backScoreButton);
 
         windowPanel.setLayout(cardLayout);
         windowPanel.add(menuPanel, "menuPanel");

@@ -4,7 +4,7 @@ import java.awt.*;
 public class MenuButton extends JButton {
     MenuButton(String text){
         this.setText(text);
-        this.setSize(250,40);
+        this.setPreferredSize(new Dimension(200,50));
         this.setBackground(Color.BLACK);
         this.setForeground(Color.WHITE);
         this.setFocusPainted(false);

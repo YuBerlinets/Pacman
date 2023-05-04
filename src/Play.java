@@ -47,6 +47,14 @@ public class Play extends JPanel {
         });
 
         mainGame = new JPanel();
+        mainGame.setLayout(new BorderLayout());
+        JButton backButton = new MenuButton("Back to Menu");
+        backButton.setPreferredSize(new Dimension(200, 50)); // Set preferred size of the button
+        backButton.addActionListener(event -> {
+            CardLayout cardLayoutGamePanel = (CardLayout) getParent().getLayout();
+            cardLayoutGamePanel.show(getParent(), "menuPanel");
+        });
+        mainGame.add(backButton,BorderLayout.SOUTH);
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
