@@ -58,6 +58,7 @@ public class Launch {
         backScoreButton = new MenuButton("Back to Menu");
         backScoreButton.addActionListener(event -> {
             cardLayout.show(windowPanel, "menuPanel");
+
         });
         backPlayButton = new MenuButton("Back to Menu");
         backPlayButton.addActionListener(event -> {
