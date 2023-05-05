@@ -37,42 +37,44 @@ public class Play extends JPanel {
             System.out.println(boardSize);
         });
 
+        mainGame = new JPanel();
         submitSize = new MenuButton("Submit");
         submitSize.addActionListener(event -> {
             if (event.getSource() == submitSize) {
                 boardSize = Integer.parseInt(boardSizeInput.getText());
                 System.out.println(boardSize);
+                mainGame.add(new BoardGUI(boardSize, boardSize).getBoardPanel());
                 cardLayout.show(this, "mainGame");
             }
         });
 
-        mainGame = new JPanel();
+        //main game appearance
         mainGame.setLayout(new BorderLayout());
+
+        //button for returning to the menu
         JButton backButton = new MenuButton("Back to Menu");
         backButton.setPreferredSize(new Dimension(200, 50)); // Set preferred size of the button
         backButton.addActionListener(event -> {
             CardLayout cardLayoutGamePanel = (CardLayout) getParent().getLayout();
             cardLayoutGamePanel.show(getParent(), "menuPanel");
         });
-        mainGame.add(backButton,BorderLayout.SOUTH);
+        mainGame.add(backButton, BorderLayout.SOUTH);
 
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(10, 0, 10, 0);
-        gbc.anchor = GridBagConstraints.CENTER;
-        boardSizeAsking.add(boardSizeTextLabel, gbc);
+        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.insets = new Insets(10, 0, 10, 0);
+        gridBagConstraints.anchor = GridBagConstraints.CENTER;
+        boardSizeAsking.add(boardSizeTextLabel, gridBagConstraints);
 
-        gbc.gridy = 1;
-        boardSizeAsking.add(boardSizeInput, gbc);
+        gridBagConstraints.gridy = 1;
+        boardSizeAsking.add(boardSizeInput, gridBagConstraints);
 
-        gbc.gridy = 2;
-        boardSizeAsking.add(submitSize, gbc);
+        gridBagConstraints.gridy = 2;
+        boardSizeAsking.add(submitSize, gridBagConstraints);
 
         boardSizeAsking.setBackground(Color.BLACK);
-
         mainGame.setBackground(Color.BLACK);
-
         this.add(boardSizeAsking);
         this.add(mainGame, "mainGame");
     }

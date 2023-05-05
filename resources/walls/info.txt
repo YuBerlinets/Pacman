@@ -1,0 +1,6 @@
+1 - left,right
+2 - top,down
+3 - left top corner
+4 - right top corner
+5 - left bottom corner
+6 - right bottom corner
