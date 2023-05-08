@@ -4,21 +4,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Launch {
-    private JFrame window = new JFrame("Pacman");
-    private JPanel windowPanel = new JPanel();
-    private JPanel menuPanel = new JPanel();
+    private JFrame window;
+    private JPanel windowPanel;
+    private JPanel menuPanel;
     private JPanel playPanel;
     private JPanel scorePanel;
     private JButton playButton, scoreButton, exitButton, backScoreButton, backPlayButton;
 
     Launch() {
+        window = new JFrame("Pacman");
         CardLayout cardLayout = new CardLayout();
+        windowPanel = new JPanel();
+        menuPanel = new JPanel();
         scorePanel = new Score();
         playPanel = new Play();
         window.setBackground(Color.BLACK);
         window.setSize(720, 720);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
+        window.setResizable(true);
         window.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         menuPanel.setLayout(new GridBagLayout());
         windowPanel.setLayout(cardLayout);
@@ -76,6 +79,7 @@ public class Launch {
         windowPanel.add(playPanel, "playPanel");
         windowPanel.add(scorePanel, "scorePanel");
         window.add(this.windowPanel, BorderLayout.CENTER);
+        window.setLocationRelativeTo(null);
         window.setVisible(true);
     }
 }
