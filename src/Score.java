@@ -21,7 +21,7 @@ public class Score extends JPanel {
         this.add(statisticsPanel, BorderLayout.CENTER);
 
         JButton backButton = new MenuButton("Back to Menu");
-        backButton.setPreferredSize(new Dimension(200, 50)); // Set preferred size of the button
+        backButton.setPreferredSize(new Dimension(200, 50));
         backButton.addActionListener(event -> {
             CardLayout cardLayout = (CardLayout) getParent().getLayout();
             cardLayout.show(getParent(), "menuPanel");
