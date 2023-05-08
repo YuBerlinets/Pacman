@@ -1,7 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class Launch {
     private JFrame window;
@@ -25,6 +24,20 @@ public class Launch {
         window.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         menuPanel.setLayout(new GridBagLayout());
         windowPanel.setLayout(cardLayout);
+
+        //test
+//        JRootPane rootPane = window.getRootPane();
+//        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+//                KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK),
+//                "close"
+//        );
+//        rootPane.getActionMap().put("close", new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                window.dispose();
+//            }
+//        });
+
 
         //logo and text panel
         JPanel information = new JPanel();
@@ -81,5 +94,7 @@ public class Launch {
         window.add(this.windowPanel, BorderLayout.CENTER);
         window.setLocationRelativeTo(null);
         window.setVisible(true);
+
     }
+
 }

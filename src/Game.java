@@ -19,6 +19,7 @@ public class Game extends JFrame {
         this.setVisible(true);
         this.setSize(width*30,height*30);
         this.setLocationRelativeTo(null);
+
         //main game appearance
         mainGame = new JPanel();
         mainGame.setLayout(new BorderLayout());

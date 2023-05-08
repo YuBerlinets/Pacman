@@ -47,9 +47,16 @@ public class Play extends JPanel {
         submitSize = new MenuButton("Submit");
         submitSize.addActionListener(event -> {
             if (event.getSource() == submitSize) {
-                boardSizeX = Integer.parseInt(boardSizeInputX.getText());
-                boardSizeY = Integer.parseInt(boardSizeInputY.getText());
-                new Game(boardSizeX, boardSizeY);
+                if (!isValid(boardSizeInputX.getText()) || !isValid(boardSizeInputY.getText())) {
+                    submitSize.setText("Enter digits!!");
+                } else {
+                    boardSizeX = Integer.parseInt(boardSizeInputX.getText());
+                    boardSizeY = Integer.parseInt(boardSizeInputY.getText());
+                    new Game(boardSizeX, boardSizeY);
+                    boardSizeInputX.setText("");
+                    boardSizeInputY.setText("");
+                    submitSize.setText("Submit");
+                }
             }
         });
         backButton = new MenuButton("Back to Menu");
@@ -81,6 +88,20 @@ public class Play extends JPanel {
 
         boardSizeAsking.setBackground(Color.BLACK);
         this.add(boardSizeAsking);
+    }
+
+    private boolean isValid(String size) {
+        if (size.isEmpty())
+            return false;
+
+        int check;
+        try {
+            check = Integer.parseInt(size);
+            return true;
+        } catch (NumberFormatException e) {
+            System.out.println("String can't be entered");
+        }
+        return false;
     }
 
 }
