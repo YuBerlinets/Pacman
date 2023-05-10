@@ -10,7 +10,6 @@ public class Game extends JFrame {
     private int score;
     private Pacman pacman;
     private Board board;
-    private NewBoard newBoard;
     private Ghost ghost1, ghost2, ghost3;
     private Image pacmanTest;
 
@@ -29,7 +28,6 @@ public class Game extends JFrame {
         currentScore.setForeground(Color.YELLOW);
 
         board = new Board(height,width);
-        newBoard = new NewBoard(height,width);//test
 
         //adding bottom panel
         bottomPanel = new JPanel();
@@ -74,7 +72,7 @@ public class Game extends JFrame {
 
         mainGame.add(bottomPanel, BorderLayout.SOUTH);
         //mainGame.add(board.getBoardPanel(), BorderLayout.CENTER);
-        mainGame.add(newBoard.getBoardPanel(), BorderLayout.CENTER);
+        mainGame.add(board.getBoardPanel(), BorderLayout.CENTER);
         mainGame.add(currentScore, BorderLayout.NORTH);
 
         mainGame.setBackground(Color.BLACK);

@@ -1,25 +1,77 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 
-public class Pacman extends JLabel implements KeyListener {
+public class Pacman extends JLabel {
     private ImageIcon pacRIGHT, pacLEFT, pacUP, pacDOWN;
     private int x;
     private int y;
+    private Board board;
     private int direction;
     private int speed;
     private boolean stuck;
     private boolean alive;
 
-    public Pacman() {
-        this.x = 1;
-        this.y = 1;
+    public Pacman(int x, int y, Board board) {
+        this.x = x;
+        this.y = y;
+        this.board = board;
         this.speed = 5;
         this.stuck = false;
         this.alive = true;
         initImages();
     }
+
+    public void moveLeft() {
+        if (x > 0 && board.getBoard()[y][x - 1] != 1) {
+            x--;
+        }
+    }
+
+    public void moveRight() {
+        if (x < board.getBoard()[y].length - 1 && board.getBoard()[y][x + 1] != 1) {
+            x++;
+        }
+    }
+
+    public void moveUp() {
+        if (y > 0 && board.getBoard()[y - 1][x] != 1) {
+            y--;
+        }
+    }
+
+    public void moveDown() {
+        if (y < board.getBoard().length - 1 && board.getBoard()[y + 1][x] != 1) {
+            y++;
+        }
+    }
+
+//    public void moveLeft() {
+//        if (x > 0 && newBoard.getBoard()[y][x - 1] != 1) {
+//            x--;
+//            newBoard.setValueAt(pacLEFT, y, x - 1);
+//        }
+//    }
+//
+//    public void moveRight() {
+//        if (x < newBoard.getColumnCount() - 1 && newBoard.getBoard()[y][x + 1] != 1) {
+//            x++;
+//            newBoard.setValueAt(pacRIGHT, y, x + 1);
+//        }
+//    }
+//
+//    public void moveUp() {
+//        if (y > 0 && newBoard.getBoard()[y - 1][x] != 1) {
+//            y--;
+//            newBoard.setValueAt(pacUP, y + 1, x);
+//        }
+//    }
+//
+//    public void moveDown() {
+//        if ((y < (newBoard.getRowCount() - 1)) && newBoard.getBoard()[y + 1][x] != 1) {
+//            y++;
+//            newBoard.setValueAt(pacDOWN, y - 1, x);
+//        }
+//    }
 
     public void move() {
         switch (direction) {
@@ -70,12 +122,10 @@ public class Pacman extends JLabel implements KeyListener {
         return pacDOWN;
     }
 
-    @Override
     public int getX() {
         return x;
     }
 
-    @Override
     public int getY() {
         return y;
     }
@@ -87,38 +137,5 @@ public class Pacman extends JLabel implements KeyListener {
 
     public boolean isAlive() {
         return alive;
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        switch (key) {
-            case KeyEvent.VK_UP:{
-                direction = KeyEvent.VK_UP;
-                System.out.println(1);
-                break;
-            }
-            case KeyEvent.VK_DOWN:
-                direction = KeyEvent.VK_DOWN;
-                System.out.println(2);
-                break;
-            case KeyEvent.VK_LEFT:
-                direction = KeyEvent.VK_LEFT;
-                System.out.println(3);
-                break;
-            case KeyEvent.VK_RIGHT:
-                direction = KeyEvent.VK_RIGHT;
-                System.out.println(4);
-                break;
-        }
-    }
-    @Override
-    public void keyReleased(KeyEvent e) {
-
     }
 }

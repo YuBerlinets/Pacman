@@ -1,6 +1,5 @@
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 
 public class TestMap {
 
@@ -12,9 +11,9 @@ public class TestMap {
 
         JPanel jPanel = new JPanel();
         jPanel.setBackground(Color.BLACK);
-        NewBoard newBoard = new NewBoard(22,22);
+        Board board = new Board(22,22);
 
-        jFrame.add(newBoard.getBoardPanel());
+        jFrame.add(board.getBoardPanel());
         jFrame.pack();
         jFrame.setVisible(true);
 
