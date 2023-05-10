@@ -17,7 +17,7 @@ public class Game extends JFrame {
     public Game(int height, int width) {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
-        this.setSize(width*35,height*35);
+        this.setSize(width * 35, height * 35);
         this.setLocationRelativeTo(null);
 
         //main game appearance
@@ -27,7 +27,18 @@ public class Game extends JFrame {
         currentScore.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentScore.setForeground(Color.YELLOW);
 
-        board = new Board(height,width);
+        board = new Board(height, width);
+        Thread scoreThread = new Thread(() -> {
+            while (board.getPacman().isAlive()) {
+                try {
+                    currentScore.setText("Score: " + board.getScore());
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println("ScoreThread was interrupted");
+                }
+            }
+        });
+        scoreThread.start();
 
         //adding bottom panel
         bottomPanel = new JPanel();
