@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Set;
 
 public class Launch {
     private JFrame window;
@@ -65,6 +66,11 @@ public class Launch {
         exitButton = new MenuButton("Exit");
         exitButton.addActionListener(event -> {
             Window window = SwingUtilities.getWindowAncestor(exitButton);
+            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+            for (Thread item : threadSet) {
+                item.interrupt();
+            }
+            System.out.println("Exiting the program...");
             window.dispose();
         });
 

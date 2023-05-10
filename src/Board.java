@@ -9,22 +9,24 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class Board extends AbstractTableModel {
+public class Board extends AbstractTableModel{
     private JPanel boardPanel;
     private int[][] board;
+    private boolean[][] boardCellVisited;
+    private int countSmallPoints;
     private int height;
     private int width;
     private JTable boardTable;
     private Pacman pacman;
+    private int score;
     private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6;
     private BufferedImage smallPoint, bigPoint, cherry;
 
     Board(int height, int width) {
         this.height = height;
         this.width = width;
-        this.pacman = new Pacman(1, 1, this);
-
-
+        this.countSmallPoints = 0;
+        this.score = 0;
         //loading pics
         String pathWall = "resources/walls/wall";
         String pathFood = "resources/food/";
@@ -62,9 +64,10 @@ public class Board extends AbstractTableModel {
                     board[i][j] = 1;
                 else if (random.nextDouble() < 0.2)
                     board[i][j] = 1;
-                else
-                    board[i][j] = 0;
-
+                else {
+                    board[i][j] = 9;
+                    countSmallPoints++;
+                }
             }
         }
         boardTable = new JTable(this);
@@ -83,6 +86,9 @@ public class Board extends AbstractTableModel {
         boardPanel.setBackground(Color.BLACK);
 
         boardPanel.add(getBoardTable());
+        pacman = new Pacman(1, 1, this);
+        board[pacman.getY()][pacman.getX()] = 7;
+
         boardPanel.addKeyListener(new PacmanKeyListener());
         boardPanel.setFocusable(true);
 
@@ -110,8 +116,20 @@ public class Board extends AbstractTableModel {
                     break;
             }
             boardTable.repaint();
-            System.out.println(pacman.getX() + " " + pacman.getY());
+//            System.out.println(pacman.getX() + " " + pacman.getY());
         }
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public Pacman getPacman() {
+        return pacman;
     }
 
     public void printBoard() {
@@ -123,6 +141,13 @@ public class Board extends AbstractTableModel {
         }
     }
 
+    public int getCountSmallPoints() {
+        return countSmallPoints;
+    }
+
+    public void setCountSmallPoints(int countSmallPoints) {
+        this.countSmallPoints = countSmallPoints;
+    }
 
     public JPanel getBoardPanel() {
         return boardPanel;
@@ -130,6 +155,10 @@ public class Board extends AbstractTableModel {
 
     public JTable getBoardTable() {
         return boardTable;
+    }
+
+    public void setValueAt(int value,int rowIndex, int columnIndex){
+        board[rowIndex][columnIndex] = value;
     }
 
     @Override
@@ -163,8 +192,8 @@ public class Board extends AbstractTableModel {
             case 6:
                 return new ImageIcon(wall6);
             case 7:
-                return pacman.getPacRIGHT();
-            case 0:
+                return pacman.getCurrentPac();
+            case 9:
                 return new ImageIcon(smallPoint);
             default:
                 return null;
