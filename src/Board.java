@@ -128,23 +128,27 @@ public class Board extends AbstractTableModel {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    pacman.setDirection(KeyEvent.VK_LEFT);
-                    pacman.moveLeft();
+                    //pacman.setDirection(KeyEvent.VK_LEFT);
+                    pacman.setPacmanMovement(PacmanMovement.LEFT);
+//                    pacman.moveLeft();
                     System.out.println("Left " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_RIGHT:
-                    pacman.setDirection(KeyEvent.VK_RIGHT);
-                    pacman.moveRight();
+//                    pacman.setDirection(KeyEvent.VK_RIGHT);
+//                    pacman.moveRight();
+                    pacman.setPacmanMovement(PacmanMovement.RIGHT);
                     System.out.println("right " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_UP:
-                    pacman.setDirection(KeyEvent.VK_UP);
-                    pacman.moveUp();
+//                    pacman.setDirection(KeyEvent.VK_UP);
+//                    pacman.moveUp();
+                    pacman.setPacmanMovement(PacmanMovement.UP);
                     System.out.println("up " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_DOWN:
-                    pacman.setDirection(KeyEvent.VK_DOWN);
-                    pacman.moveDown();
+//                    pacman.setDirection(KeyEvent.VK_DOWN);
+//                    pacman.moveDown();
+                    pacman.setPacmanMovement(PacmanMovement.DOWN);
                     System.out.println("down " + e.getKeyCode());
                     break;
             }
@@ -168,10 +172,8 @@ public class Board extends AbstractTableModel {
 //                    }
 //                }
 //            });
-//            thread1.start();
             boardTable.repaint();
             System.out.println(pacman.getCurrentPac());
-//            System.out.println(pacman.getX() + " " + pacman.getY());
         }
     }
 

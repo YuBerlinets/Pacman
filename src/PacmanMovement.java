@@ -1,3 +1,3 @@
 public enum PacmanMovement {
-    UP, DOWN, LEFT, RIGHT;
+    NONE,UP, DOWN, LEFT, RIGHT;
 }
