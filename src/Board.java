@@ -7,7 +7,6 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 public class Board extends AbstractTableModel {
     private JPanel boardPanel;
@@ -71,16 +70,16 @@ public class Board extends AbstractTableModel {
         board = new int[][]{{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,},
                 {1, 7, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
                 {1, 9, 9, 3, 2, 4, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 3, 2, 4, 9, 9, 1,},
-                {1, 9, 9, 1, 9, 1, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 1, 9, 1, 9, 9, 1,},
+                {1, 9, 9, 1, 0, 1, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 1, 0, 1, 9, 9, 1,},
                 {1, 9, 9, 5, 2, 6, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 5, 2, 6, 9, 9, 1,},
                 {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 2, 2, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
                 {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
                 {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
                 {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
                 {1, 9, 1, 1, 9, 9, 9, 9, 3, 2, 9, 9, 2, 4, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 9, 9, 9, 2, 2, 2, 1, 9, 9, 9, 9, 1, 2, 2, 2, 9, 9, 9, 9, 1,},
-                {1, 9, 9, 9, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 1, 0, 0, 0, 0, 1, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 9, 9, 9, 2, 2, 2, 1, 0, 0, 0, 0, 1, 2, 2, 2, 9, 9, 9, 9, 1,},
+                {1, 9, 9, 9, 9, 9, 9, 9, 1, 0, 0, 0, 0, 1, 9, 9, 9, 9, 9, 9, 9, 1,},
                 {1, 2, 2, 9, 9, 9, 9, 9, 5, 2, 2, 2, 2, 6, 9, 9, 9, 9, 9, 2, 2, 1,},
                 {1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
                 {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 1, 1, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
@@ -116,27 +115,6 @@ public class Board extends AbstractTableModel {
 
 
         boardPanel.addKeyListener(new PacmanKeyListener());
-        Thread thread = new Thread(() -> {
-            try {
-                pacman.getPacAnim();
-
-            } catch (InterruptedException ex) {
-                System.out.println("PacmanAnimation Thread was interrupted");
-            }
-        });
-        thread.start();
-        Thread thread1 = new Thread(() -> {
-            while (pacman.isAlive()) {
-                boardTable.repaint();
-                System.out.println(pacman.getCurrentPac());
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-        thread1.start();
         boardPanel.setFocusable(true);
 
     }
@@ -150,38 +128,49 @@ public class Board extends AbstractTableModel {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-//                    pacman.setDirection(KeyEvent.VK_LEFT);
+                    pacman.setDirection(KeyEvent.VK_LEFT);
                     pacman.moveLeft();
                     System.out.println("Left " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_RIGHT:
-//                    pacman.setDirection(KeyEvent.VK_RIGHT);
+                    pacman.setDirection(KeyEvent.VK_RIGHT);
                     pacman.moveRight();
                     System.out.println("right " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_UP:
-//                    pacman.setDirection(KeyEvent.VK_UP);
+                    pacman.setDirection(KeyEvent.VK_UP);
                     pacman.moveUp();
                     System.out.println("up " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_DOWN:
-//                    pacman.setDirection(KeyEvent.VK_DOWN);
+                    pacman.setDirection(KeyEvent.VK_DOWN);
                     pacman.moveDown();
                     System.out.println("down " + e.getKeyCode());
                     break;
             }
-
-//            Thread thread1 = new Thread(() -> {
-//                    pacman.move();
-//
+//            Thread thread = new Thread(() -> {
 //                try {
-//                    Thread.sleep(2000);
+//                    while (true)
+//                        pacman.getPacAnim();
 //                } catch (InterruptedException ex) {
-//                    throw new RuntimeException(ex);
+//                    System.out.println("PacmanAnimation Thread was interrupted");
+//                }
+//            });
+//            thread.start();
+//            boardTable.repaint();
+//            Thread thread1 = new Thread(() -> {
+//                while (pacman.isAlive()) {
+//                    boardTable.repaint();
+//                    try {
+//                        Thread.sleep(200);
+//                    } catch (InterruptedException ex) {
+//                        throw new RuntimeException(ex);
+//                    }
 //                }
 //            });
 //            thread1.start();
             boardTable.repaint();
+            System.out.println(pacman.getCurrentPac());
 //            System.out.println(pacman.getX() + " " + pacman.getY());
         }
     }

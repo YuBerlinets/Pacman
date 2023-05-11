@@ -54,6 +54,7 @@ public class Game extends JFrame {
         JButton backButton = new MenuButton("Back to Menu");
         backButton.setPreferredSize(new Dimension(180, 35));
         backButton.addActionListener(event -> {
+            board.getPacman().death();
             this.dispose();
         });
         buttonBottomPanel.add(backButton);
