@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class Board extends AbstractTableModel{
+public class Board extends AbstractTableModel {
     private JPanel boardPanel;
     private int[][] board;
     private boolean[][] boardCellVisited;
@@ -45,31 +45,54 @@ public class Board extends AbstractTableModel{
 
         // initialize board
         board = new int[height][width];
-        Random random = new Random();
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (i == 0 && j == 0)
-                    board[i][j] = 3;
-                else if (i == 1 && j == 1)
-                    board[i][j] = 7;
-                else if (i == 0 && j == width - 1)
-                    board[i][j] = 4;
-                else if ((i == height - 1 && j == 0))
-                    board[i][j] = 5;
-                else if (i == height - 1 && j == width - 1)
-                    board[i][j] = 6;
-                else if (i == 0 || i == height - 1)
-                    board[i][j] = 2;
-                else if (j == 0 || j == width - 1)
-                    board[i][j] = 1;
-                else if (random.nextDouble() < 0.2)
-                    board[i][j] = 1;
-                else {
-                    board[i][j] = 9;
-                    countSmallPoints++;
-                }
-            }
-        }
+//        Random random = new Random();
+//        for (int i = 0; i < height; i++) {
+//            for (int j = 0; j < width; j++) {
+//                if (i == 0 && j == 0)
+//                    board[i][j] = 3;
+//                else if (i == 0 && j == width - 1)
+//                    board[i][j] = 4;
+//                else if ((i == height - 1 && j == 0))
+//                    board[i][j] = 5;
+//                else if (i == height - 1 && j == width - 1)
+//                    board[i][j] = 6;
+//                else if (i == 0 || i == height - 1)
+//                    board[i][j] = 2;
+//                else if (j == 0 || j == width - 1)
+//                    board[i][j] = 1;
+//                else if (random.nextDouble() < 0.2)
+//                    board[i][j] = 1;
+//                else {
+//                    board[i][j] = 9;
+//                    countSmallPoints++;
+//                }
+//            }
+//        }
+        board = new int[][]{{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,},
+                {1, 7, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 9, 9, 3, 2, 4, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 3, 2, 4, 9, 9, 1,},
+                {1, 9, 9, 1, 9, 1, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 1, 9, 1, 9, 9, 1,},
+                {1, 9, 9, 5, 2, 6, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 5, 2, 6, 9, 9, 1,},
+                {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 2, 2, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 3, 2, 9, 9, 2, 4, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 1, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 1, 9, 1,},
+                {1, 9, 9, 9, 9, 2, 2, 2, 1, 9, 9, 9, 9, 1, 2, 2, 2, 9, 9, 9, 9, 1,},
+                {1, 9, 9, 9, 9, 9, 9, 9, 1, 9, 9, 9, 9, 1, 9, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 2, 2, 9, 9, 9, 9, 9, 5, 2, 2, 2, 2, 6, 9, 9, 9, 9, 9, 2, 2, 1,},
+                {1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 1, 1, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
+                {1, 9, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 9, 1,},
+                {1, 9, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 9, 1,},
+                {1, 9, 1, 9, 9, 9, 9, 9, 2, 2, 4, 3, 2, 2, 9, 9, 9, 9, 9, 1, 9, 1,},
+                {1, 9, 9, 9, 1, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 1, 9, 9, 9, 1,},
+                {1, 9, 9, 9, 1, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 1, 9, 9, 9, 1,},
+                {5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6,}
+
+        };
+
         boardTable = new JTable(this);
         boardTable.setRowHeight(30);
         boardTable.setBackground(Color.BLACK);
@@ -86,10 +109,34 @@ public class Board extends AbstractTableModel{
         boardPanel.setBackground(Color.BLACK);
 
         boardPanel.add(getBoardTable());
+
         pacman = new Pacman(1, 1, this);
+        //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
 
+
         boardPanel.addKeyListener(new PacmanKeyListener());
+        Thread thread = new Thread(() -> {
+            try {
+                pacman.getPacAnim();
+
+            } catch (InterruptedException ex) {
+                System.out.println("PacmanAnimation Thread was interrupted");
+            }
+        });
+        thread.start();
+        Thread thread1 = new Thread(() -> {
+            while (pacman.isAlive()) {
+                boardTable.repaint();
+                System.out.println(pacman.getCurrentPac());
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        thread1.start();
         boardPanel.setFocusable(true);
 
     }
@@ -103,18 +150,37 @@ public class Board extends AbstractTableModel{
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
+//                    pacman.setDirection(KeyEvent.VK_LEFT);
                     pacman.moveLeft();
+                    System.out.println("Left " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_RIGHT:
+//                    pacman.setDirection(KeyEvent.VK_RIGHT);
                     pacman.moveRight();
+                    System.out.println("right " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_UP:
+//                    pacman.setDirection(KeyEvent.VK_UP);
                     pacman.moveUp();
+                    System.out.println("up " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_DOWN:
+//                    pacman.setDirection(KeyEvent.VK_DOWN);
                     pacman.moveDown();
+                    System.out.println("down " + e.getKeyCode());
                     break;
             }
+
+//            Thread thread1 = new Thread(() -> {
+//                    pacman.move();
+//
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException ex) {
+//                    throw new RuntimeException(ex);
+//                }
+//            });
+//            thread1.start();
             boardTable.repaint();
 //            System.out.println(pacman.getX() + " " + pacman.getY());
         }
@@ -157,7 +223,7 @@ public class Board extends AbstractTableModel{
         return boardTable;
     }
 
-    public void setValueAt(int value,int rowIndex, int columnIndex){
+    public void setValueAt(int value, int rowIndex, int columnIndex) {
         board[rowIndex][columnIndex] = value;
     }
 

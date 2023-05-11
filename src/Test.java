@@ -1,68 +1,37 @@
 //import javax.swing.*;
 //import java.awt.*;
-//import java.awt.event.KeyEvent;
+//import java.awt.event.*;
 //
-//public class Test extends JFrame implements Runnable {
-//    private Pacman pacman;
+//public class Test extends JPanel implements ActionListener {
+//
+//    private int pacX, pacY;
+//    private Image pacImage;
+//    private Timer timer;
 //
 //    public Test() {
-//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-//        setSize(720, 720);
-//        setLocationRelativeTo(null);
-//        setVisible(true);
-//        setLayout(null);
-//        Board board = new Board(22,22);
-//        pacman = new Pacman(0, 0, board);
-//        setBackground(Color.BLACK);
+//        pacX = 0;
+//        pacY = 0;
+//        pacImage = new ImageIcon("resources/pacman/pacmanRIGHT.png").getImage();
+//        timer = new Timer(10, this);
+//        timer.start();
+//        setPreferredSize(new Dimension(800, 600));
+//    }
 //
-//        JTable jTable = new JTable(board);
-//        JPanel jPanel = new JPanel();
+//    public void actionPerformed(ActionEvent e) {
+//        pacX += 1;
+//        repaint();
+//    }
 //
-//        jPanel.add(pacman);
-//        jPanel.setBackground(Color.BLACK);
-//        jPanel.add(jTable);
-//        add(jPanel);
-//        add(pacman.getBoard().getBoardPanel());
-//        pacman.setBounds(pacman.getX(), pacman.getY(), 30, 30);
-//        addKeyListener(new java.awt.event.KeyAdapter() {
-//            public void keyPressed(KeyEvent e) {
-//                pacman.setDirection(e.getKeyCode());
-//            }
-//        });
-//        setFocusable(true);
+//    public void paintComponent(Graphics g) {
+//        super.paintComponent(g);
+//        g.drawImage(pacImage, pacX, pacY, null);
 //    }
 //
 //    public static void main(String[] args) {
-//        Test test = new Test();
-//        Thread thread = new Thread(test);
-//        thread.run();
-//    }
-//
-//    @Override
-//    public void run() {
-//        while (pacman.isAlive()) {
-//            switch (pacman.getDirection()) {
-//                case KeyEvent.VK_LEFT:
-//                    pacman.moveLeft();
-//                    break;
-//                case KeyEvent.VK_RIGHT:
-//                    pacman.moveRight();
-//                    break;
-//                case KeyEvent.VK_UP:
-//                    pacman.moveUp();
-//                    break;
-//                case KeyEvent.VK_DOWN:
-//                    pacman.moveDown();
-//                    break;
-//            }
-//            pacman.setBounds(pacman.getX(), pacman.getY(), 30, 30);
-//            System.out.println(pacman.getPosition());
-//            try {
-//                Thread.sleep(70);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+//        JFrame frame = new JFrame("PacMan");
+//        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        frame.add(new Test());
+//        frame.pack();
+//        frame.setVisible(true);
 //    }
 //}
-//
