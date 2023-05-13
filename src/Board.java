@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class Board extends AbstractTableModel {
     private JPanel boardPanel;
@@ -18,14 +19,30 @@ public class Board extends AbstractTableModel {
     private JTable boardTable;
     private Pacman pacman;
     private int score;
+    private int cellHeight, cellWidth;
     private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6;
     private BufferedImage smallPoint, bigPoint, cherry;
+    private BoardGenerator boardGenerator;
 
     Board(int height, int width) {
         this.height = height;
         this.width = width;
         this.countSmallPoints = 0;
         this.score = 0;
+        boardGenerator = new BoardGenerator();
+        board = boardGenerator.generateBoard(height, width);
+
+
+        //set size of cell
+        if (height > 50 || width > 50) {
+            cellWidth = 20;
+            cellHeight = 20;
+        } else {
+            cellWidth = 30;
+            cellHeight = 30;
+        }
+
+
         //loading pics
         String pathWall = "resources/walls/wall";
         String pathFood = "resources/food/";
@@ -43,7 +60,7 @@ public class Board extends AbstractTableModel {
         }
 
         // initialize board
-        board = new int[height][width];
+//        board = new int[height][width];
 //        Random random = new Random();
 //        for (int i = 0; i < height; i++) {
 //            for (int j = 0; j < width; j++) {
@@ -67,41 +84,19 @@ public class Board extends AbstractTableModel {
 //                }
 //            }
 //        }
-        board = new int[][]{{3, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4,},
-                {1, 7, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
-                {1, 9, 9, 3, 2, 4, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 3, 2, 4, 9, 9, 1,},
-                {1, 9, 9, 1, 0, 1, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 1, 0, 1, 9, 9, 1,},
-                {1, 9, 9, 5, 2, 6, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 5, 2, 6, 9, 9, 1,},
-                {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 2, 2, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 3, 2, 9, 9, 2, 4, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 1, 1, 9, 9, 9, 9, 1, 0, 0, 0, 0, 1, 9, 9, 9, 9, 1, 1, 9, 1,},
-                {1, 9, 9, 9, 9, 2, 2, 2, 1, 0, 0, 0, 0, 1, 2, 2, 2, 9, 9, 9, 9, 1,},
-                {1, 9, 9, 9, 9, 9, 9, 9, 1, 0, 0, 0, 0, 1, 9, 9, 9, 9, 9, 9, 9, 1,},
-                {1, 2, 2, 9, 9, 9, 9, 9, 5, 2, 2, 2, 2, 6, 9, 9, 9, 9, 9, 2, 2, 1,},
-                {1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1,},
-                {1, 9, 9, 9, 9, 9, 9, 2, 2, 2, 1, 1, 2, 2, 2, 9, 9, 9, 9, 9, 9, 1,},
-                {1, 9, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 9, 1,},
-                {1, 9, 1, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 1, 9, 1,},
-                {1, 9, 1, 9, 9, 9, 9, 9, 2, 2, 4, 3, 2, 2, 9, 9, 9, 9, 9, 1, 9, 1,},
-                {1, 9, 9, 9, 1, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 1, 9, 9, 9, 1,},
-                {1, 9, 9, 9, 1, 9, 9, 9, 9, 9, 1, 1, 9, 9, 9, 9, 9, 1, 9, 9, 9, 1,},
-                {5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6,}
 
-        };
+        printBoard();
 
         boardTable = new JTable(this);
         boardTable.setRowHeight(30);
         boardTable.setBackground(Color.BLACK);
-        boardTable.setRowHeight(30);
+        boardTable.setRowHeight(cellHeight);
         boardTable.setShowGrid(false);
         boardTable.setCellSelectionEnabled(false);
         boardTable.setColumnSelectionAllowed(false);
         boardTable.setRowSelectionAllowed(false);
-        for (int i = 0; i < width; i++) {
-            boardTable.getColumnModel().getColumn(i).setPreferredWidth(30);
+        for (int i = 0; i < this.width; i++) {
+            boardTable.getColumnModel().getColumn(i).setPreferredWidth(cellWidth);
         }
 
         boardPanel = new JPanel();
@@ -116,7 +111,6 @@ public class Board extends AbstractTableModel {
 
         boardPanel.addKeyListener(new PacmanKeyListener());
         boardPanel.setFocusable(true);
-
     }
 
     public int[][] getBoard() {
@@ -129,51 +123,34 @@ public class Board extends AbstractTableModel {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
                     //pacman.setDirection(KeyEvent.VK_LEFT);
-                    pacman.setPacmanMovement(PacmanMovement.LEFT);
 //                    pacman.moveLeft();
+                    pacman.setPacmanMovement(PacmanMovement.LEFT);
                     System.out.println("Left " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_RIGHT:
-//                    pacman.setDirection(KeyEvent.VK_RIGHT);
-//                    pacman.moveRight();
                     pacman.setPacmanMovement(PacmanMovement.RIGHT);
                     System.out.println("right " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_UP:
-//                    pacman.setDirection(KeyEvent.VK_UP);
-//                    pacman.moveUp();
                     pacman.setPacmanMovement(PacmanMovement.UP);
                     System.out.println("up " + e.getKeyCode());
                     break;
                 case KeyEvent.VK_DOWN:
-//                    pacman.setDirection(KeyEvent.VK_DOWN);
-//                    pacman.moveDown();
                     pacman.setPacmanMovement(PacmanMovement.DOWN);
                     System.out.println("down " + e.getKeyCode());
                     break;
             }
-//            Thread thread = new Thread(() -> {
-//                try {
-//                    while (true)
-//                        pacman.getPacAnim();
-//                } catch (InterruptedException ex) {
-//                    System.out.println("PacmanAnimation Thread was interrupted");
-//                }
-//            });
-//            thread.start();
-//            boardTable.repaint();
-//            Thread thread1 = new Thread(() -> {
-//                while (pacman.isAlive()) {
-//                    boardTable.repaint();
-//                    try {
-//                        Thread.sleep(200);
-//                    } catch (InterruptedException ex) {
-//                        throw new RuntimeException(ex);
-//                    }
-//                }
-//            });
             boardTable.repaint();
             System.out.println(pacman.getCurrentPac());
+        }
+    }
+
+    public void win() {
+        if (countSmallPoints == 0) {
+            JDialog winDialog = new JDialog();
+            JTextField winText = new JTextField();
+            winDialog.add(winText);
+
         }
     }
 
@@ -192,7 +169,7 @@ public class Board extends AbstractTableModel {
     public void printBoard() {
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
-                System.out.print(board[i][j]);
+                System.out.print(board[i][j] + " ");
             }
             System.out.println();
         }
@@ -252,9 +229,34 @@ public class Board extends AbstractTableModel {
                 return pacman.getCurrentPac();
             case 9:
                 return new ImageIcon(smallPoint);
+            case 13, 14:
+                return new ImageIcon("resources/max.png");
             default:
                 return null;
         }
     }
 
+    public BufferedImage getWall1() {
+        return wall1;
+    }
+
+    public BufferedImage getWall2() {
+        return wall2;
+    }
+
+    public BufferedImage getWall3() {
+        return wall3;
+    }
+
+    public BufferedImage getWall4() {
+        return wall4;
+    }
+
+    public BufferedImage getWall5() {
+        return wall5;
+    }
+
+    public BufferedImage getWall6() {
+        return wall6;
+    }
 }

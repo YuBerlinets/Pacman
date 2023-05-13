@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class Pacman {
     private ImageIcon pacRIGHT, pacLEFT, pacUP, pacDOWN, pacDEF;
@@ -27,6 +28,7 @@ public class Pacman {
         this.stuck = false;
         this.alive = true;
         initImages();
+
         //store images in hashmap to animate eating
         pacImages = new HashMap<>();
         pacImages.put(pacUP, pacUP);
@@ -39,11 +41,11 @@ public class Pacman {
 
 
         Thread threadPacMoving = new Thread(() -> {
-            while (isAlive()) {
+            while (this.isAlive()) {
                 move();
                 this.board.getBoardPanel().repaint();
                 try {
-                    Thread.sleep(500);
+                    Thread.sleep(400);
                 } catch (InterruptedException e) {
                     System.out.println("threadPacMoving was interrupted");
                 }
@@ -51,21 +53,28 @@ public class Pacman {
         });
         threadPacMoving.start();
 
-        Thread threadPacAnimation = new Thread(() -> {
-            while (!isStuck()) {
-                try {
-                    getPacAnim();
-//                    this.board.getBoardPanel().repaint();
-                    System.out.println(getPacmanMovement());
-                    Thread.sleep(400);
-                } catch (InterruptedException e) {
-                    System.out.println("threadPacAnimation was interrupted");
-                }
-            }
-        });
-        threadPacAnimation.start();
+//        Thread threadPacAnimation = new Thread(() -> {
+//            if (this.isAlive()) {
+//                while (!isStuck()) {
+//                    try {
+//                        getPacAnim();
+////                        System.out.println(getPacmanMovement());
+//                        System.out.println(1);
+//                        System.out.println(isAlive());
+//                        Thread.sleep(300);
+//                    } catch (InterruptedException e) {
+//                        System.out.println("threadPacAnimation was interrupted");
+//                    }
+//                }
+//            }
+//        });
+//        threadPacAnimation.start();
+        getPacAnim();
 
-
+        if (!this.isAlive()) {
+//            threadPacAnimation.interrupt();
+            threadPacMoving.interrupt();
+        }
     }
 
     private void initImages() {
@@ -88,38 +97,64 @@ public class Pacman {
         this.direction = direction;
     }
 
-    public void getPacAnim() throws InterruptedException {
+    //    public void getPacAnim() throws InterruptedException {
+//        long eatingSpeed = 200;
+//        while (this.isAlive()) {
+//            if (!this.isStuck()) {
+//                ImageIcon tmp = currentPac;
+//                currentPac = pacDEF;
+//                board.getBoardTable().repaint();
+//                Thread.sleep(eatingSpeed);
+//                currentPac = pacImages.get(tmp);
+//                board.getBoardTable().repaint();
+//                Thread.sleep(eatingSpeed);
+//            }
+//            Thread.sleep(100);
+//        }
+//    }
+    public synchronized void getPacAnim() {
         long eatingSpeed = 200;
-        while (isAlive()) {
-            if(!isStuck()) {
-                ImageIcon tmp = currentPac;
-                currentPac = pacDEF;
-                board.getBoardTable().repaint();
-                Thread.sleep(eatingSpeed);
-                currentPac = pacImages.get(tmp);
-                board.getBoardTable().repaint();
-                Thread.sleep(eatingSpeed);
+        Thread threadPacmanAnimation = new Thread(()->{
+            while (this.isAlive()) {
+                if (!this.isStuck() && currentPac != pacDEF) {
+                    ImageIcon tmp;
+//                    synchronized (this) {
+                        tmp = currentPac;
+                        currentPac = pacDEF;
+//                    }
+                    board.getBoardTable().repaint();
+                    try {
+                        Thread.sleep(eatingSpeed);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+//                    synchronized (this) {
+                        currentPac = tmp;
+//                    }
+                    board.getBoardTable().repaint();
+                    try {
+                        Thread.sleep(eatingSpeed);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-        }
+        });
+        threadPacmanAnimation.start();
     }
+
 
     public void move() {
         switch (pacmanMovement) {
-            case LEFT:
-                moveLeft();
-                break;
-            case RIGHT:
-                moveRight();
-                break;
-            case UP:
-                moveUp();
-                break;
-            case DOWN:
-                moveDown();
-                break;
-            default:
-                // do nothing if direction is STOP or unknown
-                break;
+            case LEFT -> moveLeft();
+            case RIGHT -> moveRight();
+            case UP -> moveUp();
+            case DOWN -> moveDown();
         }
     }
 
@@ -136,13 +171,13 @@ public class Pacman {
                 boardArray[newY][newX] != WALL6;
     }
 
-    private void updatePosition(int newY, int newX) {
+    private synchronized void updatePosition(int newY, int newX) {
         board.setValueAt(0, y, x);
         if (board.getBoard()[newY][newX] == SMALL_POINT) {
             board.setCountSmallPoints(board.getCountSmallPoints() - 1);
             board.setScore(board.getScore() + 10);
         }
-        currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
+        //currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
         y = newY;
         x = newX;
         board.setValueAt(PACMAN, y, x);
@@ -153,6 +188,7 @@ public class Pacman {
         if (isValidMove(y, newX)) {
             stuck = false;
             pacmanMovement = pacmanMovement.LEFT;
+            currentPac = pacLEFT;
             updatePosition(y, newX);
         } else
             stuck = true;
@@ -163,6 +199,7 @@ public class Pacman {
         if (isValidMove(y, newX)) {
             stuck = false;
             pacmanMovement = pacmanMovement.RIGHT;
+            currentPac = pacRIGHT;
             updatePosition(y, newX);
         } else
             stuck = true;
@@ -173,6 +210,7 @@ public class Pacman {
         if (isValidMove(newY, x)) {
             stuck = false;
             pacmanMovement = pacmanMovement.UP;
+            currentPac = pacUP;
             updatePosition(newY, x);
         } else
             stuck = true;
@@ -183,69 +221,12 @@ public class Pacman {
         if (isValidMove(newY, x)) {
             stuck = false;
             pacmanMovement = pacmanMovement.DOWN;
+            currentPac = pacDOWN;
             updatePosition(newY, x);
         } else
             stuck = true;
     }
 
-
-//    public void moveLeft() {
-//        currentPac = pacLEFT;
-//        if (x > 0 && ((board.getBoard()[y][x - 1] != 1) && (board.getBoard()[y][x - 1] != 2) && (board.getBoard()[y][x - 1] != 3)
-//                && (board.getBoard()[y][x - 1] != 4) && (board.getBoard()[y][x - 1] != 5) && (board.getBoard()[y][x - 1] != 6))) {
-//            board.setValueAt(0, y, x);
-//            if (board.getBoard()[y][x - 1] == 9) {
-//                board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-//                board.setScore(board.getScore() + 10);
-//            }
-//            x--;
-//            board.setValueAt(7, y, x);
-//        }
-//    }
-//
-//    public void moveRight() {
-//        currentPac = pacRIGHT;
-//        if (x < board.getBoard()[y].length - 1 && ((board.getBoard()[y][x + 1] != 1) && (board.getBoard()[y][x + 1] != 2)
-//                && (board.getBoard()[y][x + 1] != 3) && (board.getBoard()[y][x + 1] != 4) && (board.getBoard()[y][x + 1] != 5)
-//                && (board.getBoard()[y][x + 1] != 6))) {
-//            board.setValueAt(0, y, x);
-//            if (board.getBoard()[y][x + 1] == 9) {
-//                board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-//                board.setScore(board.getScore() + 10);
-//            }
-//            x++;
-//            board.setValueAt(7, y, x);
-//        }
-//    }
-//
-//    public void moveUp() {
-//        currentPac = pacUP;
-//        if (y > 0 && ((board.getBoard()[y - 1][x] != 2) && (board.getBoard()[y - 1][x] != 1) && (board.getBoard()[y - 1][x] != 3)
-//                && (board.getBoard()[y - 1][x] != 4) && (board.getBoard()[y - 1][x] != 5) && (board.getBoard()[y - 1][x] != 6))) {
-//            board.setValueAt(0, y, x);
-//            if (board.getBoard()[y - 1][x] == 9) {
-//                board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-//                board.setScore(board.getScore() + 10);
-//            }
-//            y--;
-//            board.setValueAt(7, y, x);
-//        }
-//    }
-//
-//    public void moveDown() {
-//        currentPac = pacDOWN;
-//        if (y < board.getBoard().length - 1 && ((board.getBoard()[y + 1][x] != 2) && (board.getBoard()[y + 1][x] != 1)
-//                && (board.getBoard()[y + 1][x] != 4) && (board.getBoard()[y + 1][x] != 3) && (board.getBoard()[y + 1][x] != 5)
-//                && (board.getBoard()[y + 1][x] != 6))) {
-//            board.setValueAt(0, y, x);
-//            if (board.getBoard()[y + 1][x] == 9) {
-//                board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-//                board.setScore(board.getScore() + 10);
-//            }
-//            y++;
-//            board.setValueAt(7, y, x);
-//        }
-//    }
 
     public void printPoints() {
         System.out.println(board.getCountSmallPoints());
@@ -294,4 +275,6 @@ public class Pacman {
     public Map<ImageIcon, ImageIcon> getPacImages() {
         return pacImages;
     }
+
+
 }

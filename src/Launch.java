@@ -5,6 +5,7 @@ import java.util.Set;
 
 public class Launch {
     private JFrame window;
+    private boolean isWorking;
     private JPanel windowPanel;
     private JPanel menuPanel;
     private JPanel playPanel;
@@ -46,6 +47,7 @@ public class Launch {
         JLabel logo = new JLabel(new ImageIcon("resources/info.png"));
         information.add(logo);
         information.setBackground(Color.BLACK);
+
         //buttons panel
         JPanel buttons = new JPanel();
         buttons.setLayout(new GridLayout(5, 1));
@@ -66,13 +68,18 @@ public class Launch {
         exitButton = new MenuButton("Exit");
         exitButton.addActionListener(event -> {
             Window window = SwingUtilities.getWindowAncestor(exitButton);
-            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-            for (Thread item : threadSet) {
-                item.interrupt();
-            }
+//            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
+//            for (Thread item : threadSet) {
+//                try {
+//                    item.interrupt();
+//                } catch (Exception e) {
+//                    System.err.println("Exception while removing reference: " + e.getMessage());
+//                }
+//            }
             System.out.println("Exiting the program...");
             window.dispose();
         });
+
 
         //back button for score and play panel
         backPlayButton = new MenuButton("Back to Menu");

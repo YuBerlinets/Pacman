@@ -17,7 +17,12 @@ public class Game extends JFrame {
     public Game(int height, int width) {
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
-        this.setSize(width * 35, height * 35);
+
+        if(height > 50 || width > 50) {
+            this.setSize(width * 25, height * 25);
+        }else
+            this.setSize(width * 35, height * 35);
+
         this.setLocationRelativeTo(null);
 
         //main game appearance
