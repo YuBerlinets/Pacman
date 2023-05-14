@@ -17,7 +17,8 @@ public class Pacman {
     private boolean stuck;
     private boolean alive;
 
-    private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5, WALL6 = 6;
+    private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5,
+            WALL6 = 6, WALL13 = 13,GHOST_DOOR = 12;
 
     public Pacman(int x, int y, Board board) {
         this.x = x;
@@ -52,27 +53,9 @@ public class Pacman {
             }
         });
         threadPacMoving.start();
-
-//        Thread threadPacAnimation = new Thread(() -> {
-//            if (this.isAlive()) {
-//                while (!isStuck()) {
-//                    try {
-//                        getPacAnim();
-////                        System.out.println(getPacmanMovement());
-//                        System.out.println(1);
-//                        System.out.println(isAlive());
-//                        Thread.sleep(300);
-//                    } catch (InterruptedException e) {
-//                        System.out.println("threadPacAnimation was interrupted");
-//                    }
-//                }
-//            }
-//        });
-//        threadPacAnimation.start();
         getPacAnim();
 
         if (!this.isAlive()) {
-//            threadPacAnimation.interrupt();
             threadPacMoving.interrupt();
         }
     }
@@ -97,51 +80,32 @@ public class Pacman {
         this.direction = direction;
     }
 
-    //    public void getPacAnim() throws InterruptedException {
-//        long eatingSpeed = 200;
-//        while (this.isAlive()) {
-//            if (!this.isStuck()) {
-//                ImageIcon tmp = currentPac;
-//                currentPac = pacDEF;
-//                board.getBoardTable().repaint();
-//                Thread.sleep(eatingSpeed);
-//                currentPac = pacImages.get(tmp);
-//                board.getBoardTable().repaint();
-//                Thread.sleep(eatingSpeed);
-//            }
-//            Thread.sleep(100);
-//        }
-//    }
     public synchronized void getPacAnim() {
         long eatingSpeed = 200;
-        Thread threadPacmanAnimation = new Thread(()->{
+        Thread threadPacmanAnimation = new Thread(() -> {
             while (this.isAlive()) {
                 if (!this.isStuck() && currentPac != pacDEF) {
                     ImageIcon tmp;
-//                    synchronized (this) {
-                        tmp = currentPac;
-                        currentPac = pacDEF;
-//                    }
+                    tmp = currentPac;
+                    currentPac = pacDEF;
                     board.getBoardTable().repaint();
                     try {
                         Thread.sleep(eatingSpeed);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        System.out.println("Thread was interrupted");
                     }
-//                    synchronized (this) {
-                        currentPac = tmp;
-//                    }
+                    currentPac = tmp;
                     board.getBoardTable().repaint();
                     try {
                         Thread.sleep(eatingSpeed);
                     } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
+                        System.out.println("Thread was interrupted");
                     }
                 }
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Thread was interrupted");
                 }
             }
         });
@@ -168,7 +132,9 @@ public class Pacman {
                 boardArray[newY][newX] != WALL3 &&
                 boardArray[newY][newX] != WALL4 &&
                 boardArray[newY][newX] != WALL5 &&
-                boardArray[newY][newX] != WALL6;
+                boardArray[newY][newX] != WALL6 &&
+                boardArray[newY][newX] != GHOST_DOOR &&
+                boardArray[newY][newX] != WALL13;
     }
 
     private synchronized void updatePosition(int newY, int newX) {
@@ -177,18 +143,59 @@ public class Pacman {
             board.setCountSmallPoints(board.getCountSmallPoints() - 1);
             board.setScore(board.getScore() + 10);
         }
-        //currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
+        currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
         y = newY;
         x = newX;
         board.setValueAt(PACMAN, y, x);
     }
+
+//    private synchronized void updatePosition(int newY, int newX) {
+//        if (newY == y && newX == x) {
+//            return;
+//        }
+//
+//        int oldY = y;
+//        int oldX = x;
+//        y = newY;
+//        x = newX;
+//
+//        if (board.getBoard()[newY][newX] == SMALL_POINT) {
+//            board.setCountSmallPoints(board.getCountSmallPoints() - 1);
+//            board.setScore(board.getScore() + 10);
+//        }
+//
+//        new Thread(() -> {
+//            // Calculate the pixel coordinates of the old cell and the new cell
+//            int oldPixelX = oldX * board.getCellWidth();
+//            int oldPixelY = oldY * board.getCellHeight();
+//            int newPixelX = newX * board.getCellWidth();
+//            int newPixelY = newY * board.getCellHeight();
+//            for (int i = 0; i < board.getCellWidth(); i += 5) {
+//                int dx = (newPixelX - oldPixelX) * i / board.getCellWidth();
+//                int dy = (newPixelY - oldPixelY) * i / board.getCellHeight();
+//                board.getBoardPanel().repaint(oldPixelX, oldPixelY, board.getCellWidth(), board.getCellHeight());
+//                board.getBoardPanel().repaint(newPixelX, newPixelY, board.getCellWidth(), board.getCellHeight());
+//                this.setX(oldPixelX + dx);
+//                this.setY(oldPixelY + dy);
+//                try {
+//                    Thread.sleep(10);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            System.out.println(2);
+//            board.setValueAt(0, oldY, oldX);
+//            board.setValueAt(PACMAN, newY, newX);
+//        }).start();
+//    }
+
 
     public void moveLeft() {
         int newX = x - 1;
         if (isValidMove(y, newX)) {
             stuck = false;
             pacmanMovement = pacmanMovement.LEFT;
-            currentPac = pacLEFT;
+            //currentPac = pacLEFT;
             updatePosition(y, newX);
         } else
             stuck = true;
@@ -199,7 +206,7 @@ public class Pacman {
         if (isValidMove(y, newX)) {
             stuck = false;
             pacmanMovement = pacmanMovement.RIGHT;
-            currentPac = pacRIGHT;
+            //currentPac = pacRIGHT;
             updatePosition(y, newX);
         } else
             stuck = true;
@@ -210,7 +217,7 @@ public class Pacman {
         if (isValidMove(newY, x)) {
             stuck = false;
             pacmanMovement = pacmanMovement.UP;
-            currentPac = pacUP;
+            //currentPac = pacUP;
             updatePosition(newY, x);
         } else
             stuck = true;
@@ -221,9 +228,10 @@ public class Pacman {
         if (isValidMove(newY, x)) {
             stuck = false;
             pacmanMovement = pacmanMovement.DOWN;
-            currentPac = pacDOWN;
+            //currentPac = pacDOWN;
             updatePosition(newY, x);
-        } else
+        }
+        else
             stuck = true;
     }
 
@@ -276,5 +284,11 @@ public class Pacman {
         return pacImages;
     }
 
+    public void setX(int x) {
+        this.x = x;
+    }
 
+    public void setY(int y) {
+        this.y = y;
+    }
 }

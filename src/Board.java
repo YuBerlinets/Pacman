@@ -20,9 +20,10 @@ public class Board extends AbstractTableModel {
     private Pacman pacman;
     private int score;
     private int cellHeight, cellWidth;
-    private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6;
+    private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6, wall13, ghostDoor;
     private BufferedImage smallPoint, bigPoint, cherry;
     private BoardGenerator boardGenerator;
+    private Ghost redGhost;
 
     Board(int height, int width) {
         this.height = height;
@@ -53,37 +54,14 @@ public class Board extends AbstractTableModel {
             wall4 = ImageIO.read(new File(pathWall + 4 + ".png"));
             wall5 = ImageIO.read(new File(pathWall + 5 + ".png"));
             wall6 = ImageIO.read(new File(pathWall + 6 + ".png"));
+            wall13 = ImageIO.read(new File(pathWall + 13 + ".png"));
+            ghostDoor = ImageIO.read(new File("resources/walls/ghost_door.png"));
+
             smallPoint = ImageIO.read(new File(pathFood + "smallPoint.png"));
             bigPoint = ImageIO.read(new File(pathFood + "bigPoint.png"));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Photo haven't been founded");
         }
-
-        // initialize board
-//        board = new int[height][width];
-//        Random random = new Random();
-//        for (int i = 0; i < height; i++) {
-//            for (int j = 0; j < width; j++) {
-//                if (i == 0 && j == 0)
-//                    board[i][j] = 3;
-//                else if (i == 0 && j == width - 1)
-//                    board[i][j] = 4;
-//                else if ((i == height - 1 && j == 0))
-//                    board[i][j] = 5;
-//                else if (i == height - 1 && j == width - 1)
-//                    board[i][j] = 6;
-//                else if (i == 0 || i == height - 1)
-//                    board[i][j] = 2;
-//                else if (j == 0 || j == width - 1)
-//                    board[i][j] = 1;
-//                else if (random.nextDouble() < 0.2)
-//                    board[i][j] = 1;
-//                else {
-//                    board[i][j] = 9;
-//                    countSmallPoints++;
-//                }
-//            }
-//        }
 
         printBoard();
 
@@ -103,13 +81,14 @@ public class Board extends AbstractTableModel {
         boardPanel.setBackground(Color.BLACK);
 
         boardPanel.add(getBoardTable());
+        boardPanel.addKeyListener(new PacmanKeyListener());
 
         pacman = new Pacman(1, 1, this);
+        redGhost = new Ghost("red", 10, 10, this);
         //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
-
-
-        boardPanel.addKeyListener(new PacmanKeyListener());
+        //setting position for redGhost
+        board[10][10] = 15;
         boardPanel.setFocusable(true);
     }
 
@@ -122,8 +101,6 @@ public class Board extends AbstractTableModel {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_LEFT:
-                    //pacman.setDirection(KeyEvent.VK_LEFT);
-//                    pacman.moveLeft();
                     pacman.setPacmanMovement(PacmanMovement.LEFT);
                     System.out.println("Left " + e.getKeyCode());
                     break;
@@ -140,7 +117,7 @@ public class Board extends AbstractTableModel {
                     System.out.println("down " + e.getKeyCode());
                     break;
             }
-            boardTable.repaint();
+            //boardTable.repaint();
             System.out.println(pacman.getCurrentPac());
         }
     }
@@ -229,8 +206,12 @@ public class Board extends AbstractTableModel {
                 return pacman.getCurrentPac();
             case 9:
                 return new ImageIcon(smallPoint);
-            case 13, 14:
-                return new ImageIcon("resources/max.png");
+            case 12:
+                return new ImageIcon(ghostDoor);
+            case 13:
+                return new ImageIcon(wall13);
+            case 15:
+                return redGhost.getCurrentGhost();
             default:
                 return null;
         }
@@ -258,5 +239,13 @@ public class Board extends AbstractTableModel {
 
     public BufferedImage getWall6() {
         return wall6;
+    }
+
+    public int getCellHeight() {
+        return cellHeight;
+    }
+
+    public int getCellWidth() {
+        return cellWidth;
     }
 }

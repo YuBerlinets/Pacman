@@ -17,29 +17,29 @@ public class BoardGenerator {
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                if (i == 0 || j == 0 || i == board.length - 1 || j == board[0].length - 1) {
-                    board[i][j] = SMALL_POINT;
-                } else {
-                    board[i][j] = SMALL_POINT;
-                }
+                board[i][j] = SMALL_POINT;
             }
         }
         initRecMiddle();
         initUpDownBlocks();
         initBorders();
-//        for (int i = 0; i < height; i++) {
-//            for (int j = 0; j < width; j++) {
-//                System.out.print(board[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-        System.out.println();
-        System.out.println();
-        System.out.println();
         int [][] completedBoard = expandArray(board);
+        changeCorners(completedBoard);
         return completedBoard;
     }
+    private void changeCorners(int [] [] arr){
+        int height = arr.length;
+        int width = arr[0].length;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if((j >width/2) && arr[i][j] == WALL3)
+                    arr[i][j] = WALL4;
+                else if(((j >width/2) && arr[i][j] == WALL5))
+                    arr[i][j] = WALL6;
+            }
+        }
 
+    }
     private void initUpDownBlocks() {
         int x = 2;
         int y = 4;

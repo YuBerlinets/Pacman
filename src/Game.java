@@ -23,7 +23,7 @@ public class Game extends JFrame {
         }else
             this.setSize(width * 35, height * 35);
 
-        this.setLocationRelativeTo(null);
+
 
         //main game appearance
         mainGame = new JPanel();
@@ -37,7 +37,7 @@ public class Game extends JFrame {
             while (board.getPacman().isAlive()) {
                 try {
                     currentScore.setText("Score: " + board.getScore());
-                    Thread.sleep(100);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     System.out.println("ScoreThread was interrupted");
                 }
@@ -94,6 +94,7 @@ public class Game extends JFrame {
 
         mainGame.setBackground(Color.BLACK);
         this.add(mainGame);
+        this.setLocationRelativeTo(null);
     }
 }
 

@@ -11,7 +11,7 @@ public class TestMap {
 
         JPanel jPanel = new JPanel();
         jPanel.setBackground(Color.BLACK);
-        Board board = new Board(12, 6);
+        Board board = new Board(22, 22);
 
         jPanel.add(board.getBoardPanel());
 
