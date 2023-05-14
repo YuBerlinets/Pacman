@@ -54,28 +54,25 @@ public class Launch {
         buttons.setBackground(Color.BLACK);
 
         playButton = new MenuButton("Play");
+
         playButton.addActionListener(event -> {
             if (event.getSource() == playButton) {
                 cardLayout.show(windowPanel, "playPanel");
             }
         });
+
         scoreButton = new MenuButton("Score");
         scoreButton.addActionListener(event -> {
             if (event.getSource() == scoreButton) {
+                scorePanel.repaint();
+                windowPanel.repaint();
                 cardLayout.show(windowPanel, "scorePanel");
             }
         });
+
         exitButton = new MenuButton("Exit");
         exitButton.addActionListener(event -> {
             Window window = SwingUtilities.getWindowAncestor(exitButton);
-//            Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-//            for (Thread item : threadSet) {
-//                try {
-//                    item.interrupt();
-//                } catch (Exception e) {
-//                    System.err.println("Exception while removing reference: " + e.getMessage());
-//                }
-//            }
             System.out.println("Exiting the program...");
             window.dispose();
         });

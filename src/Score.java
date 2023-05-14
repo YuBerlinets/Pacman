@@ -17,7 +17,8 @@ public class Score extends JPanel {
 
         JPanel statisticsPanel = new JPanel();
         statisticsPanel.setBackground(Color.BLACK);
-        statisticsPanel.add(statistics.getStatistics());
+
+        statisticsPanel.add(statistics.getStats());
         this.add(statisticsPanel, BorderLayout.CENTER);
 
         JButton backButton = new MenuButton("Back to Menu");

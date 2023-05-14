@@ -1,13 +1,16 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Random;
 
 public class Board extends AbstractTableModel {
     private JPanel boardPanel;
@@ -84,16 +87,30 @@ public class Board extends AbstractTableModel {
         boardPanel.addKeyListener(new PacmanKeyListener());
 
         pacman = new Pacman(1, 1, this);
-        redGhost = new Ghost("red", 10, 10, this);
+//        redGhost = new Ghost("red", 10, 10, this);
         //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
         //setting position for redGhost
-        board[10][10] = 15;
+//        board[10][10] = 15;
+        countSmallPoints = countSmallPoint(board);
+        System.out.println("Numbers of points ot eat: " + countSmallPoints);
+        win();
         boardPanel.setFocusable(true);
     }
 
     public int[][] getBoard() {
         return board;
+    }
+
+    private int countSmallPoint(int[][] arr) {
+        int count = 0;
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                if (arr[i][j] == 9)
+                    count++;
+            }
+        }
+        return count;
     }
 
     private class PacmanKeyListener extends KeyAdapter {
@@ -123,12 +140,21 @@ public class Board extends AbstractTableModel {
     }
 
     public void win() {
-        if (countSmallPoints == 0) {
-            JDialog winDialog = new JDialog();
-            JTextField winText = new JTextField();
-            winDialog.add(winText);
-
-        }
+        new Thread(() -> {
+            while (pacman.isAlive()) {
+                if (countSmallPoints == 0) {
+                    SavingScore savingScore = new SavingScore(this);
+                    pacman.death();
+//                    this.boardPanel.getParent()
+                    break;
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread was interrupted");
+                }
+            }
+        }).start();
     }
 
     public void setScore(int score) {
@@ -210,11 +236,15 @@ public class Board extends AbstractTableModel {
                 return new ImageIcon(ghostDoor);
             case 13:
                 return new ImageIcon(wall13);
-            case 15:
-                return redGhost.getCurrentGhost();
+//            case 15:
+//                return redGhost.getCurrentGhost();
             default:
                 return null;
         }
+    }
+
+    public Ghost getRedGhost() {
+        return redGhost;
     }
 
     public BufferedImage getWall1() {

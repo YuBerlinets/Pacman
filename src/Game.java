@@ -8,21 +8,21 @@ public class Game extends JFrame {
     private JPanel livesPanel;
     private JPanel foodPanel;
     private int score;
-    private Pacman pacman;
     private Board board;
-    private Ghost ghost1, ghost2, ghost3;
-    private Image pacmanTest;
 
 
     public Game(int height, int width) {
+        this.setTitle("Pacman");
+        this.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setVisible(true);
 
-        if(height > 50 || width > 50) {
+        if (height > 50 || width > 50) {
             this.setSize(width * 25, height * 25);
-        }else
+        } else if (height < 18 || width < 18)
+            this.setSize(width * 40, height * 35);
+        else
             this.setSize(width * 35, height * 35);
-
 
 
         //main game appearance
@@ -60,6 +60,7 @@ public class Game extends JFrame {
         backButton.setPreferredSize(new Dimension(180, 35));
         backButton.addActionListener(event -> {
             board.getPacman().death();
+//            board.getRedGhost().stop();
             this.dispose();
         });
         buttonBottomPanel.add(backButton);

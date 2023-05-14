@@ -27,6 +27,7 @@ public class BoardGenerator {
         changeCorners(completedBoard);
         return completedBoard;
     }
+
     private void changeCorners(int [] [] arr){
         int height = arr.length;
         int width = arr[0].length;

@@ -1,8 +1,6 @@
 import javax.swing.*;
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class Pacman {
     private ImageIcon pacRIGHT, pacLEFT, pacUP, pacDOWN, pacDEF;
