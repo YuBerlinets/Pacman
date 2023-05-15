@@ -34,7 +34,7 @@ public class Game extends JFrame{
         currentScore.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentScore.setForeground(Color.YELLOW);
 
-        board = new Board(height, width);
+        board = new Board(height, width,this);
 
         //updating score
         Thread scoreThread = new Thread(() -> {
@@ -101,19 +101,19 @@ public class Game extends JFrame{
         mainGame.add(currentScore, BorderLayout.NORTH);
 
         mainGame.setBackground(Color.BLACK);
-        this.setFocusable(true);
-        this.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
-                    board.getPacman().death();
-                    board.getRedGhost().stop();
-                    board.getYellowGhost().stop();
-                    board.getBlueGhost().stop();
-                    dispose();
-                }
-            }
-        });
+//        this.setFocusable(true);
+//        this.addKeyListener(new KeyAdapter() {
+//            @Override
+//            public void keyPressed(KeyEvent e) {
+//                if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+//                    board.getPacman().death();
+//                    board.getRedGhost().stop();
+//                    board.getYellowGhost().stop();
+//                    board.getBlueGhost().stop();
+//                    dispose();
+//                }
+//            }
+//        });
         this.add(mainGame);
         this.setLocationRelativeTo(null);
     }

@@ -24,6 +24,7 @@ public class Pacman {
         this.board = board;
         this.stuck = false;
         this.alive = true;
+        this.lives = 3;
         initImages();
 
         //store images in hashmap to animate eating
@@ -73,38 +74,71 @@ public class Pacman {
     }
 
 
+    //    public synchronized void getPacAnim() {
+//        final long eatingSpeed = 150;
+//        Thread threadPacmanAnimation = new Thread(() -> {
+//            while (this.isAlive()) {
+//                if (!this.isStuck() && currentPac != pacDEF) {
+//                    ImageIcon tmp;
+//                    tmp = currentPac;
+//                    currentPac = pacDEF;
+//                    board.getBoardTable().repaint();
+//                    try {
+//                        Thread.sleep(eatingSpeed);
+//                    } catch (InterruptedException e) {
+//                        System.out.println("Thread was interrupted");
+//                    }
+//                    currentPac = tmp;
+//                    board.getBoardTable().repaint();
+//                    try {
+//                        Thread.sleep(eatingSpeed);
+//                    } catch (InterruptedException e) {
+//                        System.out.println("Thread was interrupted");
+//                    }
+//                }
+//                try {
+//                    Thread.sleep(1);
+//                } catch (InterruptedException e) {
+//                    System.out.println("Thread was interrupted");
+//                }
+//            }
+//        });
+//        threadPacmanAnimation.start();
+//    }
     public synchronized void getPacAnim() {
-        final long eatingSpeed = 150;
+        final long animationSpeed = 200;
         Thread threadPacmanAnimation = new Thread(() -> {
             while (this.isAlive()) {
-                if (!this.isStuck() && currentPac != pacDEF) {
-                    ImageIcon tmp;
-                    tmp = currentPac;
-                    currentPac = pacDEF;
+                ImageIcon currentImage = getCurrentPacImage();
+                if (currentImage != null) {
+                    setPacImage(pacDEF);
                     board.getBoardTable().repaint();
                     try {
-                        Thread.sleep(eatingSpeed);
+                        Thread.sleep(animationSpeed);
                     } catch (InterruptedException e) {
                         System.out.println("Thread was interrupted");
                     }
-                    currentPac = tmp;
+                    setPacImage(currentImage);
                     board.getBoardTable().repaint();
+
                     try {
-                        Thread.sleep(eatingSpeed);
+                        Thread.sleep(animationSpeed);
                     } catch (InterruptedException e) {
                         System.out.println("Thread was interrupted");
                     }
-                }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    System.out.println("Thread was interrupted");
                 }
             }
         });
         threadPacmanAnimation.start();
     }
 
+    private synchronized ImageIcon getCurrentPacImage() {
+        return currentPac;
+    }
+
+    private synchronized void setPacImage(ImageIcon newImage) {
+        currentPac = newImage;
+    }
 
     public void move() {
         switch (pacmanMovement) {

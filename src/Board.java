@@ -29,8 +29,12 @@ public class Board extends AbstractTableModel {
     private Ghost redGhost;
     private Ghost yellowGhost;
     private Ghost blueGhost;
+    private int startPositionPacmanX, startPositionPacmanY,
+            startPositionGhost1X, startPositionGhost1Y,
+            startPositionGhost2X, startPositionGhost2Y,
+            startPositionGhost3X, startPositionGhost3Y;
 
-    Board(int heightInput, int widthInput) {
+    Board(int heightInput, int widthInput,JFrame mainFrame) {
         this.height = heightInput;
         this.width = widthInput;
         this.countSmallPoints = 0;
@@ -92,12 +96,22 @@ public class Board extends AbstractTableModel {
         boardPanel.setBackground(Color.BLACK);
 
         boardPanel.add(getBoardTable());
-        boardPanel.addKeyListener(new PacmanKeyListener());
+        boardPanel.addKeyListener(new PacmanKeyListener(mainFrame));
+
+        //initialise a start positions
+        startPositionPacmanX = 1;
+        startPositionPacmanY = 1;
+        startPositionGhost1Y = board.length - 5;
+        startPositionGhost1X = board[1].length - 5;
+        startPositionGhost2Y = board.length - 5;
+        startPositionGhost2X = 5;
+        startPositionGhost3Y = 6;
+        startPositionGhost3X = 2;
 
         pacman = new Pacman(1, 1, this);
-        redGhost = new Ghost("red", board.length-5, board[1].length-5, this);
-        yellowGhost = new Ghost("yellow", board.length-5 , 5 , this);
-        blueGhost = new Ghost("blue", 6, 2, this);
+        redGhost = new Ghost("red", startPositionGhost1Y, startPositionGhost1X, this);
+        yellowGhost = new Ghost("yellow", startPositionGhost2Y, startPositionGhost2X, this);
+        blueGhost = new Ghost("blue", startPositionGhost3Y, startPositionGhost3X, this);
 
         //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
@@ -110,6 +124,7 @@ public class Board extends AbstractTableModel {
         countSmallPoints = countSmallPoint(board);
         System.out.println("Numbers of points ot eat: " + countSmallPoints);
         win();
+        collisionChecker();
         boardPanel.setFocusable(true);
     }
 
@@ -129,29 +144,84 @@ public class Board extends AbstractTableModel {
     }
 
     private class PacmanKeyListener extends KeyAdapter {
+        JFrame mainFrame;
+        PacmanKeyListener(JFrame mainFrame){
+            this.mainFrame = mainFrame;
+        }
         @Override
         public void keyPressed(KeyEvent e) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_LEFT:
-                    pacman.setPacmanMovement(PacmanMovement.LEFT);
-                    System.out.println("Left " + e.getKeyCode());
-                    break;
-                case KeyEvent.VK_RIGHT:
-                    pacman.setPacmanMovement(PacmanMovement.RIGHT);
-                    System.out.println("right " + e.getKeyCode());
-                    break;
-                case KeyEvent.VK_UP:
-                    pacman.setPacmanMovement(PacmanMovement.UP);
-                    System.out.println("up " + e.getKeyCode());
-                    break;
-                case KeyEvent.VK_DOWN:
-                    pacman.setPacmanMovement(PacmanMovement.DOWN);
-                    System.out.println("down " + e.getKeyCode());
-                    break;
+            if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                    getPacman().death();
+                    getRedGhost().stop();
+                    getYellowGhost().stop();
+                    getBlueGhost().stop();
+                    mainFrame.dispose();
+                }else{
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        pacman.setPacmanMovement(PacmanMovement.LEFT);
+                        System.out.println("Left " + e.getKeyCode());
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        pacman.setPacmanMovement(PacmanMovement.RIGHT);
+                        System.out.println("right " + e.getKeyCode());
+                        break;
+                    case KeyEvent.VK_UP:
+                        pacman.setPacmanMovement(PacmanMovement.UP);
+                        System.out.println("up " + e.getKeyCode());
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        pacman.setPacmanMovement(PacmanMovement.DOWN);
+                        System.out.println("down " + e.getKeyCode());
+                        break;
+                }
+                //boardTable.repaint();
+                System.out.println(pacman.getCurrentPac());
             }
-            //boardTable.repaint();
-            System.out.println(pacman.getCurrentPac());
         }
+    }
+
+    public void collisionChecker() {
+        Thread collisionCheckerThread = new Thread (()->{
+            while (pacman.isAlive()) {
+                if ((pacman.getX() == redGhost.getX() || pacman.getX() == yellowGhost.getX() || pacman.getX() == blueGhost.getX())
+                        &&(pacman.getY() == redGhost.getY() || pacman.getY() == yellowGhost.getY() || pacman.getY() == blueGhost.getY())) {
+                    System.out.println("Collision");
+                    pacman.minusLife();
+                    if(pacman.getLives() == 0){
+                        SavingScore savingScore = new SavingScore(this);
+                        pacman.death();
+
+                        break;
+                    }
+
+                    board[redGhost.getY()][redGhost.getX()] = 0;
+                    board[yellowGhost.getY()][yellowGhost.getX()] = 0;
+                    board[blueGhost.getY()][blueGhost.getX()] = 0;
+
+                    pacman.setY(startPositionPacmanY);
+                    pacman.setX(startPositionPacmanX);
+                    redGhost.setY(startPositionGhost1Y);
+                    redGhost.setX(startPositionGhost1X);
+                    yellowGhost.setY(startPositionGhost2Y);
+                    yellowGhost.setX(startPositionGhost2X);
+                    blueGhost.setY(startPositionGhost3Y);
+                    blueGhost.setX(startPositionGhost3X);
+                    board[redGhost.getY()][redGhost.getX()] = 15;
+                    board[yellowGhost.getY()][yellowGhost.getX()] = 16;
+                    board[blueGhost.getY()][blueGhost.getX()] = 17;
+
+                    boardTable.repaint();
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread collisionCheckerThread was interrupted");
+                }
+            }
+        });
+        collisionCheckerThread.start();
+
     }
 
     public void win() {
