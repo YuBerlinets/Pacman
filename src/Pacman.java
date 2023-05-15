@@ -10,20 +10,18 @@ public class Pacman {
     private Board board;
     private PacmanMovement pacmanMovement;
     private Map<ImageIcon, ImageIcon> pacImages;
-    private int direction;
-    private int speed;
+    private int lives;
     private boolean stuck;
     private boolean alive;
+    private long speed = 400;
 
     private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5,
-            WALL6 = 6, WALL13 = 13,GHOST_DOOR = 12;
+            WALL6 = 6, WALL13 = 13, GHOST_DOOR = 12, CHERRY = 21, BANANA = 22, ORANGE = 23, APPLE = 24, BLUEBERRY = 25;
 
     public Pacman(int x, int y, Board board) {
         this.x = x;
         this.y = y;
         this.board = board;
-        this.direction = 0;
-        this.speed = 5;
         this.stuck = false;
         this.alive = true;
         initImages();
@@ -44,7 +42,7 @@ public class Pacman {
                 move();
 //                this.board.getBoardPanel().repaint();
                 try {
-                    Thread.sleep(400);
+                    Thread.sleep(speed);
                 } catch (InterruptedException e) {
                     System.out.println("threadPacMoving was interrupted");
                 }
@@ -74,12 +72,9 @@ public class Pacman {
         return y;
     }
 
-    public void setDirection(int direction) {
-        this.direction = direction;
-    }
 
     public synchronized void getPacAnim() {
-        final long eatingSpeed = 200;
+        final long eatingSpeed = 150;
         Thread threadPacmanAnimation = new Thread(() -> {
             while (this.isAlive()) {
                 if (!this.isStuck() && currentPac != pacDEF) {
@@ -141,6 +136,7 @@ public class Pacman {
             board.setCountSmallPoints(board.getCountSmallPoints() - 1);
             board.setScore(board.getScore() + 10);
         }
+        System.out.println(board.getCountSmallPoints());
         currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
         y = newY;
         x = newX;
@@ -228,11 +224,17 @@ public class Pacman {
             pacmanMovement = pacmanMovement.DOWN;
             //currentPac = pacDOWN;
             updatePosition(newY, x);
-        }
-        else
+        } else
             stuck = true;
     }
 
+    public void minusLife() {
+        lives -= 1;
+    }
+
+    public int getLives() {
+        return lives;
+    }
 
     public void printPoints() {
         System.out.println(board.getCountSmallPoints());
@@ -248,14 +250,6 @@ public class Pacman {
 
     public Board getBoard() {
         return board;
-    }
-
-    public int getDirection() {
-        return direction;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public boolean isStuck() {

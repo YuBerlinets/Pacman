@@ -53,7 +53,8 @@ public class Play extends JPanel {
                     boardSizeX = Integer.parseInt(boardSizeInputX.getText());
                     boardSizeY = Integer.parseInt(boardSizeInputY.getText());
                     firstLaunch.dispose();
-                    new Game(boardSizeX, boardSizeY,firstLaunch);
+                    SwingUtilities.invokeLater(() ->
+                            new Game(boardSizeX, boardSizeY, firstLaunch));
                     boardSizeInputX.setText("");
                     boardSizeInputY.setText("");
                     submitSize.setText("Submit");

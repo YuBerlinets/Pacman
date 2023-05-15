@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
-public class Game extends JFrame {
+public class Game extends JFrame{
     private JPanel mainGame;
     private JLabel currentScore;
     private JPanel bottomPanel;
@@ -33,6 +35,8 @@ public class Game extends JFrame {
         currentScore.setForeground(Color.YELLOW);
 
         board = new Board(height, width);
+
+        //updating score
         Thread scoreThread = new Thread(() -> {
             while (board.getPacman().isAlive()) {
                 try {
@@ -60,7 +64,9 @@ public class Game extends JFrame {
         backButton.setPreferredSize(new Dimension(180, 35));
         backButton.addActionListener(event -> {
             board.getPacman().death();
-//            board.getRedGhost().stop();
+            board.getRedGhost().stop();
+            board.getYellowGhost().stop();
+            board.getBlueGhost().stop();
             new Launch();
             this.dispose();
         });
@@ -95,8 +101,22 @@ public class Game extends JFrame {
         mainGame.add(currentScore, BorderLayout.NORTH);
 
         mainGame.setBackground(Color.BLACK);
+        this.setFocusable(true);
+        this.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                    board.getPacman().death();
+                    board.getRedGhost().stop();
+                    board.getYellowGhost().stop();
+                    board.getBlueGhost().stop();
+                    dispose();
+                }
+            }
+        });
         this.add(mainGame);
         this.setLocationRelativeTo(null);
     }
+
 }
 

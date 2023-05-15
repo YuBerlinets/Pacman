@@ -1,37 +1,43 @@
 import javax.swing.*;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Random;
 
 public class Ghost {
-
-
-    enum ghostMovement {
-        NONE, UP, DOWN, LEFT, RIGHT;
-    }
-
     private ImageIcon currentGhost;
     private ImageIcon ghostIcon1, ghostIcon2;
     private ImageIcon ghostVul1, ghostVul2;
     private String ghostPath = "resources/ghosts/";
     private Board board;
+    private int[] upgrades = {21, 22, 23, 24, 25, 26};
+
     private int x;
     private int y;
     private boolean isRunning;
     private int[][] originalBoard;
-    private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5, WALL6 = 6, WALL13 = 13;
+    private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5, WALL6 = 6, WALL13 = 13,
+            CHERRY = 21, BANANA = 22, ORANGE = 23, APPLE = 24, BLUEBERRY = 25;
 
-    public Ghost(String color, int x, int y, Board board) {
+    public Ghost(String color, int y, int x, Board board) {
         this.x = x;
         this.y = y;
         this.isRunning = true;
         this.board = board;
         this.originalBoard = Arrays.copyOf(board.getBoard(), board.getBoard().length);
+        originalBoard[x][y] = 14;
         ghostVul1 = new ImageIcon(ghostPath + "vulGhost1.png");
         ghostVul2 = new ImageIcon(ghostPath + "vulGhost2.png");
         if (color.equals("red")) {
             this.ghostIcon1 = new ImageIcon(ghostPath + "redGhost1.png");
             this.ghostIcon2 = new ImageIcon(ghostPath + "redGhost2.png");
+        } else if (color.equals("blue")) {
+            this.ghostIcon1 = new ImageIcon(ghostPath + "blueGhost1.png");
+            this.ghostIcon2 = new ImageIcon(ghostPath + "blueGhost2.png");
+        } else {
+            this.ghostIcon1 = new ImageIcon(ghostPath + "yellowGhost1.png");
+            this.ghostIcon2 = new ImageIcon(ghostPath + "yellowGhost2.png");
         }
+
         currentGhost = ghostIcon1;
         changingAppearance();
         move();
@@ -45,14 +51,14 @@ public class Ghost {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Thread was interrupted");
                 }
                 currentGhost = ghostIcon2;
                 board.getBoardTable().repaint();
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    System.out.println("Thread was interrupted");
                 }
             }
         }).start();
@@ -82,15 +88,15 @@ public class Ghost {
                 }
 
                 if (isValidMove(newY, newX)) {
-                    updatePosition(newY, newX,originalBoard);
+                    updatePosition(newY, newX, originalBoard);
                     board.getBoardTable().repaint();
                 }
-                System.out.println(getX() + " " + getY());
+//                System.out.println(getX() + " " + getY());
 
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    System.out.println("Thread was interrupted");
                 }
             }
         }).start();
@@ -108,17 +114,48 @@ public class Ghost {
                 board.getBoard()[newY][newX] != WALL13;
     }
 
+    //    private void updatePosition(int newY, int newX, int[][] originalBoard) {
+//        if (newY == y && newX == x) {
+//            return;
+//        }
+//        int oldY = y;
+//        int oldX = x;
+//        int prevValueTable = originalBoard[y][x];
+//        y = newY;
+//        x = newX;
+//        board.setValueAt(15, newY, newX);
+//        board.setValueAt(prevValueTable, oldY, oldX);
+//    }
+
+
     private void updatePosition(int newY, int newX, int[][] originalBoard) {
         if (newY == y && newX == x) {
             return;
         }
-        int oldY = y;
-        int oldX = x;
-        int prevValueTable = originalBoard[y][x];
+        int prevValueTable = originalBoard[newY][newX];
+        originalBoard[newY][newX] = 15;
+        int prevValueGhost = originalBoard[y][x];
+        originalBoard[y][x] = prevValueTable;
         y = newY;
         x = newX;
         board.setValueAt(15, newY, newX);
-        board.setValueAt(9, oldY, oldX);
+
+            board.setValueAt(prevValueGhost, y, x);
+    }
+
+    private boolean shouldSpawnUpgrade() {
+        return Math.random() < 0.25;
+    }
+
+    private void spawnUpgrade(int y, int x) {
+        int upgradeType = getRandomUpgradeType();
+
+        board.setValueAt(upgradeType, y, x);
+    }
+
+    private int getRandomUpgradeType() {
+        int randomIndex = (int) (Math.random() * upgrades.length);
+        return upgrades[randomIndex];
     }
 
 

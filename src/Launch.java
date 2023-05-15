@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.security.Key;
 import java.util.Set;
 
 public class Launch {
@@ -27,19 +28,22 @@ public class Launch {
         menuPanel.setLayout(new GridBagLayout());
         windowPanel.setLayout(cardLayout);
 
-        //test
-//        JRootPane rootPane = window.getRootPane();
-//        rootPane.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
-//                KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK),
-//                "close"
-//        );
-//        rootPane.getActionMap().put("close", new AbstractAction() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                window.dispose();
-//            }
-//        });
-
+        window.setFocusable(true);
+//        window.addKeyListener(this);
+//        menuPanel.setFocusable(true);
+//        menuPanel.addKeyListener(this);
+//        scorePanel.setFocusable(true);
+//        scorePanel.addKeyListener(this);
+//        playPanel.setFocusable(true);
+//        playPanel.addKeyListener(this);
+        window.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                    window.dispose();
+                }
+            }
+        });
 
         //logo and text panel
         JPanel information = new JPanel();
@@ -66,7 +70,7 @@ public class Launch {
             if (event.getSource() == scoreButton) {
                 Statistics statistics = new Statistics();
                 statistics.readDataFromFile();
-                    scorePanel.repaint();
+                scorePanel.repaint();
                 windowPanel.repaint();
                 cardLayout.show(windowPanel, "scorePanel");
             }
@@ -112,4 +116,5 @@ public class Launch {
     public JFrame getWindow() {
         return window;
     }
+
 }
