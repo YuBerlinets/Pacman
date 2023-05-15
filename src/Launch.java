@@ -18,7 +18,7 @@ public class Launch {
         windowPanel = new JPanel();
         menuPanel = new JPanel();
         scorePanel = new Score();
-        playPanel = new Play();
+        playPanel = new Play(this.window);
         window.setBackground(Color.BLACK);
         window.setSize(720, 720);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,7 +64,9 @@ public class Launch {
         scoreButton = new MenuButton("Score");
         scoreButton.addActionListener(event -> {
             if (event.getSource() == scoreButton) {
-                scorePanel.repaint();
+                Statistics statistics = new Statistics();
+                statistics.readDataFromFile();
+                    scorePanel.repaint();
                 windowPanel.repaint();
                 cardLayout.show(windowPanel, "scorePanel");
             }
@@ -107,4 +109,7 @@ public class Launch {
 
     }
 
+    public JFrame getWindow() {
+        return window;
+    }
 }

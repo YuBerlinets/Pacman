@@ -13,14 +13,8 @@ public class Statistics {
 
     Statistics() {
         people = new ArrayList<>();
-        File file = new File(path);
-        if (file.exists() && file.length() > 0) {
-            try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(path))) {
-                people = (List<PlayerScore>) inputStream.readObject();
-            } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+
+        readDataFromFile();
         statsListModel = new StatsListModel(people);
         pplStats = new JList<>(statsListModel);
         pplStats.setBackground(Color.BLACK);
@@ -36,6 +30,17 @@ public class Statistics {
         people.add(stats);
         saveDataToFile();
     }
+    public void readDataFromFile(){
+        File file = new File(path);
+        if (file.exists() && file.length() > 0) {
+            try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(path))) {
+                people = (List<PlayerScore>) inputStream.readObject();
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     private void saveDataToFile() {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path))) {

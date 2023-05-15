@@ -42,7 +42,7 @@ public class Pacman {
         Thread threadPacMoving = new Thread(() -> {
             while (this.isAlive()) {
                 move();
-                this.board.getBoardPanel().repaint();
+//                this.board.getBoardPanel().repaint();
                 try {
                     Thread.sleep(400);
                 } catch (InterruptedException e) {
@@ -79,7 +79,7 @@ public class Pacman {
     }
 
     public synchronized void getPacAnim() {
-        long eatingSpeed = 200;
+        final long eatingSpeed = 200;
         Thread threadPacmanAnimation = new Thread(() -> {
             while (this.isAlive()) {
                 if (!this.isStuck() && currentPac != pacDEF) {

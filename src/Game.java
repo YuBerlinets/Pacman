@@ -11,7 +11,7 @@ public class Game extends JFrame {
     private Board board;
 
 
-    public Game(int height, int width) {
+    public Game(int height, int width,JFrame firstLaunch) {
         this.setTitle("Pacman");
         this.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -20,7 +20,7 @@ public class Game extends JFrame {
         if (height > 50 || width > 50) {
             this.setSize(width * 25, height * 25);
         } else if (height < 18 || width < 18)
-            this.setSize(width * 40, height * 35);
+            this.setSize(width * 45, height * 40);
         else
             this.setSize(width * 35, height * 35);
 
@@ -61,6 +61,7 @@ public class Game extends JFrame {
         backButton.addActionListener(event -> {
             board.getPacman().death();
 //            board.getRedGhost().stop();
+            new Launch();
             this.dispose();
         });
         buttonBottomPanel.add(backButton);

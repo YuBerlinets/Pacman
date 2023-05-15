@@ -10,7 +10,7 @@ public class Play extends JPanel {
     private JButton backButton;
     private JTextField boardSizeInputX, boardSizeInputY;
 
-    public Play() {
+    public Play(JFrame firstLaunch) {
         CardLayout cardLayout = new CardLayout();
         this.setVisible(true);
         this.setSize(720, 720);
@@ -52,7 +52,8 @@ public class Play extends JPanel {
                 } else {
                     boardSizeX = Integer.parseInt(boardSizeInputX.getText());
                     boardSizeY = Integer.parseInt(boardSizeInputY.getText());
-                    new Game(boardSizeX, boardSizeY);
+                    firstLaunch.dispose();
+                    new Game(boardSizeX, boardSizeY,firstLaunch);
                     boardSizeInputX.setText("");
                     boardSizeInputY.setText("");
                     submitSize.setText("Submit");
