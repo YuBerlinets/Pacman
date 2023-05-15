@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
-public class Game extends JFrame{
+public class Game extends JFrame {
     private JPanel mainGame;
     private JLabel currentScore;
     private JPanel bottomPanel;
@@ -13,7 +13,7 @@ public class Game extends JFrame{
     private Board board;
 
 
-    public Game(int height, int width,JFrame firstLaunch) {
+    public Game(int height, int width, JFrame firstLaunch) {
         this.setTitle("Pacman");
         this.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -34,7 +34,7 @@ public class Game extends JFrame{
         currentScore.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentScore.setForeground(Color.YELLOW);
 
-        board = new Board(height, width,this);
+        board = new Board(height, width, this);
 
         //updating score
         Thread scoreThread = new Thread(() -> {
@@ -76,15 +76,21 @@ public class Game extends JFrame{
         livesPanel = new JPanel();
         livesPanel.setLayout(new BoxLayout(livesPanel, BoxLayout.X_AXIS));
         livesPanel.setBackground(Color.BLACK);
-        JLabel pacmanLive1 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-        JLabel pacmanLive2 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-        JLabel pacmanLive3 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-        livesPanel.add(Box.createHorizontalStrut(10));
-        livesPanel.add(pacmanLive1);
-        livesPanel.add(Box.createHorizontalStrut(10));
-        livesPanel.add(pacmanLive2);
-        livesPanel.add(Box.createHorizontalStrut(10));
-        livesPanel.add(pacmanLive3);
+        for (int i = 0; i < board.getPacman().getLives(); i++) {
+            livesPanel.add(Box.createHorizontalStrut(10));
+            JLabel pacmanLive = new JLabel((new ImageIcon("resources/pacmanLife.png")));
+            livesPanel.add(pacmanLive);
+        }
+
+//        JLabel pacmanLive1 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
+//        JLabel pacmanLive2 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
+//        JLabel pacmanLive3 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
+//        livesPanel.add(Box.createHorizontalStrut(10));
+//        livesPanel.add(pacmanLive1);
+//        livesPanel.add(Box.createHorizontalStrut(10));
+//        livesPanel.add(pacmanLive2);
+//        livesPanel.add(Box.createHorizontalStrut(10));
+//        livesPanel.add(pacmanLive3);
         foodPanel = new JPanel();
         foodPanel.setBackground(Color.BLACK);
         foodPanel.setLayout(new GridLayout(1, 1));
@@ -101,22 +107,19 @@ public class Game extends JFrame{
         mainGame.add(currentScore, BorderLayout.NORTH);
 
         mainGame.setBackground(Color.BLACK);
-//        this.setFocusable(true);
-//        this.addKeyListener(new KeyAdapter() {
-//            @Override
-//            public void keyPressed(KeyEvent e) {
-//                if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
-//                    board.getPacman().death();
-//                    board.getRedGhost().stop();
-//                    board.getYellowGhost().stop();
-//                    board.getBlueGhost().stop();
-//                    dispose();
-//                }
-//            }
-//        });
         this.add(mainGame);
         this.setLocationRelativeTo(null);
     }
 
+    public void updateLivesPanel() {
+        livesPanel.removeAll();
+        for (int i = 0; i < board.getPacman().getLives(); i++) {
+            livesPanel.add(Box.createHorizontalStrut(10));
+            JLabel pacmanLive = new JLabel((new ImageIcon("resources/pacmanLife.png")));
+            livesPanel.add(pacmanLive);
+        }
+        livesPanel.revalidate();
+        livesPanel.repaint();
+    }
 }
 

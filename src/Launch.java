@@ -29,13 +29,6 @@ public class Launch {
         windowPanel.setLayout(cardLayout);
 
         window.setFocusable(true);
-//        window.addKeyListener(this);
-//        menuPanel.setFocusable(true);
-//        menuPanel.addKeyListener(this);
-//        scorePanel.setFocusable(true);
-//        scorePanel.addKeyListener(this);
-//        playPanel.setFocusable(true);
-//        playPanel.addKeyListener(this);
         window.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {

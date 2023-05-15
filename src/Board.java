@@ -1,11 +1,7 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -26,6 +22,7 @@ public class Board extends AbstractTableModel {
     private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6, wall13, ghostDoor;
     private BufferedImage smallPoint, bigPoint, cherry, banana, orange, apple, blueberry;
     private BoardGenerator boardGenerator;
+    private Game gameClass;
     private Ghost redGhost;
     private Ghost yellowGhost;
     private Ghost blueGhost;
@@ -34,14 +31,14 @@ public class Board extends AbstractTableModel {
             startPositionGhost2X, startPositionGhost2Y,
             startPositionGhost3X, startPositionGhost3Y;
 
-    Board(int heightInput, int widthInput,JFrame mainFrame) {
+    Board(int heightInput, int widthInput, Game game) {
         this.height = heightInput;
         this.width = widthInput;
         this.countSmallPoints = 0;
         this.score = 0;
         boardGenerator = new BoardGenerator();
         board = boardGenerator.generateBoard(height, width);
-
+        this.gameClass = game;
 
         //set size of cell
         if (height > 50 || width > 50) {
@@ -96,7 +93,7 @@ public class Board extends AbstractTableModel {
         boardPanel.setBackground(Color.BLACK);
 
         boardPanel.add(getBoardTable());
-        boardPanel.addKeyListener(new PacmanKeyListener(mainFrame));
+        boardPanel.addKeyListener(new PacmanKeyListener(game));
 
         //initialise a start positions
         startPositionPacmanX = 1;
@@ -125,6 +122,7 @@ public class Board extends AbstractTableModel {
         System.out.println("Numbers of points ot eat: " + countSmallPoints);
         win();
         collisionChecker();
+
         boardPanel.setFocusable(true);
     }
 
@@ -145,18 +143,20 @@ public class Board extends AbstractTableModel {
 
     private class PacmanKeyListener extends KeyAdapter {
         JFrame mainFrame;
-        PacmanKeyListener(JFrame mainFrame){
+
+        PacmanKeyListener(JFrame mainFrame) {
             this.mainFrame = mainFrame;
         }
+
         @Override
         public void keyPressed(KeyEvent e) {
             if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
-                    getPacman().death();
-                    getRedGhost().stop();
-                    getYellowGhost().stop();
-                    getBlueGhost().stop();
-                    mainFrame.dispose();
-                }else{
+                getPacman().death();
+                getRedGhost().stop();
+                getYellowGhost().stop();
+                getBlueGhost().stop();
+                mainFrame.dispose();
+            } else {
                 switch (e.getKeyCode()) {
                     case KeyEvent.VK_LEFT:
                         pacman.setPacmanMovement(PacmanMovement.LEFT);
@@ -182,16 +182,19 @@ public class Board extends AbstractTableModel {
     }
 
     public void collisionChecker() {
-        Thread collisionCheckerThread = new Thread (()->{
+        Thread collisionCheckerThread = new Thread(() -> {
             while (pacman.isAlive()) {
                 if ((pacman.getX() == redGhost.getX() || pacman.getX() == yellowGhost.getX() || pacman.getX() == blueGhost.getX())
-                        &&(pacman.getY() == redGhost.getY() || pacman.getY() == yellowGhost.getY() || pacman.getY() == blueGhost.getY())) {
+                        && (pacman.getY() == redGhost.getY() || pacman.getY() == yellowGhost.getY() || pacman.getY() == blueGhost.getY())) {
                     System.out.println("Collision");
                     pacman.minusLife();
-                    if(pacman.getLives() == 0){
-                        SavingScore savingScore = new SavingScore(this);
+                    gameClass.updateLivesPanel();
+                    if (pacman.getLives() == 0) {
                         pacman.death();
-
+                        redGhost.stop();
+                        yellowGhost.stop();
+                        blueGhost.stop();
+                        SavingScore savingScore = new SavingScore(this);
                         break;
                     }
 

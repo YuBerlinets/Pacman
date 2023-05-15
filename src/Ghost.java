@@ -127,7 +127,6 @@ public class Ghost {
 //        board.setValueAt(prevValueTable, oldY, oldX);
 //    }
 
-
     private void updatePosition(int newY, int newX, int[][] originalBoard) {
         if (newY == y && newX == x) {
             return;
@@ -139,8 +138,7 @@ public class Ghost {
         y = newY;
         x = newX;
         board.setValueAt(15, newY, newX);
-
-            board.setValueAt(prevValueGhost, y, x);
+        board.setValueAt(prevValueGhost, y, x);
     }
 
     private boolean shouldSpawnUpgrade() {
