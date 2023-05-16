@@ -1,8 +1,10 @@
+package View;
+
+import Model.Statistics;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.security.Key;
-import java.util.Set;
 
 public class Launch {
     private JFrame window;
@@ -13,7 +15,7 @@ public class Launch {
     private JPanel scorePanel;
     private JButton playButton, scoreButton, exitButton, backScoreButton, backPlayButton;
 
-    Launch() {
+    public Launch() {
         window = new JFrame("Pacman");
         CardLayout cardLayout = new CardLayout();
         windowPanel = new JPanel();
