@@ -1,3 +1,7 @@
+package Model;
+
+import Controller.PlayerScore;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -11,9 +15,8 @@ public class Statistics {
     private final String path = "resources/stats.txt";
     private StatsListModel statsListModel;
 
-    Statistics() {
+    public Statistics() {
         people = new ArrayList<>();
-
         readDataFromFile();
         statsListModel = new StatsListModel(people);
         pplStats = new JList<>(statsListModel);
@@ -22,21 +25,25 @@ public class Statistics {
         pplStats.setFont(new Font("sarif", Font.PLAIN, 30));
     }
 
-    public JList<PlayerScore> getStats(){
+    public JList<PlayerScore> getStats() {
         return pplStats;
     }
 
-    public void addPersonScore(PlayerScore stats){
+    public void addPersonScore(PlayerScore stats) {
         people.add(stats);
         saveDataToFile();
     }
-    public void readDataFromFile(){
+
+    public static final String ANSI_RED = "\u001B[31m";
+
+    public void readDataFromFile() {
         File file = new File(path);
         if (file.exists() && file.length() > 0) {
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(path))) {
                 people = (List<PlayerScore>) inputStream.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                System.out.println("Failed to load data from file");
+                System.out.println(ANSI_RED + "Can't read data from file" + ANSI_RED);
+
             }
         }
     }
@@ -46,7 +53,7 @@ public class Statistics {
         try (ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(path))) {
             outputStream.writeObject(people);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(ANSI_RED + "Can't write data to file" + ANSI_RED);
         }
     }
 }

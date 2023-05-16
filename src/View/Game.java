@@ -1,7 +1,9 @@
+package View;
+
+import Controller.Board;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class Game extends JFrame {
     private JPanel mainGame;

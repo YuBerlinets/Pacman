@@ -1,3 +1,5 @@
+package Model;
+
 public class BoardGenerator {
     int[][] board;
     private int height, width;

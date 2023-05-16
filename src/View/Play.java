@@ -1,3 +1,8 @@
+package View;
+
+import View.Game;
+import View.MenuButton;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;

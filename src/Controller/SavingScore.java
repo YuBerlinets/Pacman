@@ -1,11 +1,17 @@
+package Controller;
+
+import Model.Statistics;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
+import java.io.*;
 
 public class SavingScore extends JFrame {
     private Statistics statistics;
     private JTextField textField;
     private String textName;
+    private String pathToFile = "resources/statistics.txt";
 
     SavingScore(Board board) {
         this.statistics = new Statistics();
@@ -48,6 +54,8 @@ public class SavingScore extends JFrame {
                 System.out.println(statistics.getStats().getModel().getElementAt(i));
             }
             statistics.addPersonScore(playerScore);
+            saveDataToFile(playerScore);
+//            ((Model.StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
             statistics.getStats().repaint();
             for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
                 System.out.println(statistics.getStats().getModel().getElementAt(i));
@@ -74,15 +82,15 @@ public class SavingScore extends JFrame {
         return statistics;
     }
 
-//    private void saveDataToFile(PlayerScore playerScore) {
-//        try {
-//            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(pathToFile, true));
-//            out.writeObject(playerScore);
-//            out.close();
-//        } catch (IOException ex) {
-//            System.out.println("Failed to save score data");
-//        }
-//    }
+    private void saveDataToFile(PlayerScore playerScore) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(pathToFile, true));
+            out.writeObject(playerScore);
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
 
 }
