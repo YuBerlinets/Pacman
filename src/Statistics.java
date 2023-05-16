@@ -36,7 +36,7 @@ public class Statistics {
             try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(path))) {
                 people = (List<PlayerScore>) inputStream.readObject();
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                System.out.println("Failed to load data from file");
             }
         }
     }

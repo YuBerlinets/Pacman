@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class Pacman {
     private ImageIcon pacRIGHT, pacLEFT, pacUP, pacDOWN, pacDEF;
-    private ImageIcon currentPac;
+    private volatile ImageIcon currentPac;
     private int x;
     private int y;
     private Board board;
@@ -170,53 +170,13 @@ public class Pacman {
             board.setCountSmallPoints(board.getCountSmallPoints() - 1);
             board.setScore(board.getScore() + 10);
         }
-        System.out.println(board.getCountSmallPoints());
+//        System.out.println(board.getCountSmallPoints());
         currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
+        System.out.println(currentPac);
         y = newY;
         x = newX;
         board.setValueAt(PACMAN, y, x);
     }
-
-//    private synchronized void updatePosition(int newY, int newX) {
-//        if (newY == y && newX == x) {
-//            return;
-//        }
-//
-//        int oldY = y;
-//        int oldX = x;
-//        y = newY;
-//        x = newX;
-//
-//        if (board.getBoard()[newY][newX] == SMALL_POINT) {
-//            board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-//            board.setScore(board.getScore() + 10);
-//        }
-//
-//        new Thread(() -> {
-//            // Calculate the pixel coordinates of the old cell and the new cell
-//            int oldPixelX = oldX * board.getCellWidth();
-//            int oldPixelY = oldY * board.getCellHeight();
-//            int newPixelX = newX * board.getCellWidth();
-//            int newPixelY = newY * board.getCellHeight();
-//            for (int i = 0; i < board.getCellWidth(); i += 5) {
-//                int dx = (newPixelX - oldPixelX) * i / board.getCellWidth();
-//                int dy = (newPixelY - oldPixelY) * i / board.getCellHeight();
-//                board.getBoardPanel().repaint(oldPixelX, oldPixelY, board.getCellWidth(), board.getCellHeight());
-//                board.getBoardPanel().repaint(newPixelX, newPixelY, board.getCellWidth(), board.getCellHeight());
-//                this.setX(oldPixelX + dx);
-//                this.setY(oldPixelY + dy);
-//                try {
-//                    Thread.sleep(10);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//            System.out.println(2);
-//            board.setValueAt(0, oldY, oldX);
-//            board.setValueAt(PACMAN, newY, newX);
-//        }).start();
-//    }
-
 
     public void moveLeft() {
         int newX = x - 1;
