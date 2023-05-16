@@ -1,3 +1,11 @@
+package Controller;
+
+import Model.BoardGenerator;
+import Model.Ghost;
+import Model.Pacman;
+import Model.PacmanMovement;
+import View.Game;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -31,7 +39,7 @@ public class Board extends AbstractTableModel {
             startPositionGhost2X, startPositionGhost2Y,
             startPositionGhost3X, startPositionGhost3Y;
 
-    Board(int heightInput, int widthInput, Game game) {
+    public Board(int heightInput, int widthInput, Game game) {
         this.height = heightInput;
         this.width = widthInput;
         this.countSmallPoints = 0;

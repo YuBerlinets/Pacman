@@ -1,10 +1,11 @@
+package Controller;
+
+import Model.Statistics;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Random;
 
 public class SavingScore extends JFrame {
     private Statistics statistics;
@@ -54,7 +55,7 @@ public class SavingScore extends JFrame {
             }
             statistics.addPersonScore(playerScore);
             saveDataToFile(playerScore);
-//            ((StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
+//            ((Model.StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
             statistics.getStats().repaint();
             for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
                 System.out.println(statistics.getStats().getModel().getElementAt(i));

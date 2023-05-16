@@ -1,3 +1,8 @@
+package Model;
+
+import Controller.Board;
+import Model.PacmanMovement;
+
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;

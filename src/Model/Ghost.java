@@ -1,5 +1,8 @@
+package Model;
+
+import Controller.Board;
+
 import javax.swing.*;
-import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Random;
 

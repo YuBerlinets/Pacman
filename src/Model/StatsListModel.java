@@ -1,3 +1,7 @@
+package Model;
+
+import Controller.PlayerScore;
+
 import javax.swing.*;
 import java.util.List;
 
