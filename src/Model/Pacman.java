@@ -4,6 +4,7 @@ import Controller.Board;
 import Model.PacmanMovement;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 

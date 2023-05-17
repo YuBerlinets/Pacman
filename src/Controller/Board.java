@@ -397,4 +397,8 @@ public class Board extends AbstractTableModel {
     public Ghost getBlueGhost() {
         return blueGhost;
     }
+
+    public Game getGameClass() {
+        return gameClass;
+    }
 }

@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.Statistics;
+import View.Launch;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
@@ -13,7 +14,7 @@ public class SavingScore extends JFrame {
     private String textName;
     private String pathToFile = "resources/statistics.txt";
 
-    SavingScore(Board board) {
+    public SavingScore(Board board) {
         this.statistics = new Statistics();
         setSize(300, 300);
         setBackground(Color.BLACK);
@@ -55,6 +56,8 @@ public class SavingScore extends JFrame {
             }
             statistics.addPersonScore(playerScore);
             saveDataToFile(playerScore);
+            board.getGameClass().dispose();
+            new Launch();
 //            ((Model.StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
             statistics.getStats().repaint();
             for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {

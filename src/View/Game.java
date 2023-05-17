@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Board;
+import Controller.SavingScore;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,10 +9,13 @@ import java.awt.*;
 public class Game extends JFrame {
     private JPanel mainGame;
     private JLabel currentScore;
+    private JLabel currentTime;
     private JPanel bottomPanel;
     private JPanel livesPanel;
+    private JPanel topPanel;
     private JPanel foodPanel;
     private int score;
+    private int time;
     private Board board;
 
 
@@ -32,12 +36,24 @@ public class Game extends JFrame {
         //main game appearance
         mainGame = new JPanel();
         mainGame.setLayout(new BorderLayout());
+
+        topPanel = new JPanel(new BorderLayout());
+
+        topPanel.setBackground(Color.BLACK);
+
         currentScore = new JLabel("Score: " + score);
         currentScore.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentScore.setForeground(Color.YELLOW);
 
-        board = new Board(height, width, this);
+        time = 120;
+        currentTime = new JLabel("Time: " + time);
+        currentTime.setFont(new Font("SansSerif", Font.BOLD, 22));
+        currentTime.setForeground(Color.YELLOW);
 
+        //initialising board
+        board = new Board(height, width, this);
+        topPanel.add(currentScore, BorderLayout.WEST);
+        topPanel.add(currentTime,BorderLayout.EAST);
         //updating score
         Thread scoreThread = new Thread(() -> {
             while (board.getPacman().isAlive()) {
@@ -50,6 +66,27 @@ public class Game extends JFrame {
             }
         });
         scoreThread.start();
+
+        //updating time
+        Thread timeThread = new Thread(()->{
+            while (board.getPacman().isAlive()) {
+                try {
+                    currentTime.setText("Time: " + time);
+                    time--;
+                    if(time == 0){
+                        SavingScore savingScore = new SavingScore(board);
+                        board.getPacman().death();
+                        break;
+                    }
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    System.out.println("TimeThread was interrupted");
+                }
+            }
+        });
+        timeThread.start();
+
+
 
         //adding bottom panel
         bottomPanel = new JPanel();
@@ -84,15 +121,6 @@ public class Game extends JFrame {
             livesPanel.add(pacmanLive);
         }
 
-//        JLabel pacmanLive1 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-//        JLabel pacmanLive2 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-//        JLabel pacmanLive3 = new JLabel(new ImageIcon("resources/pacmanLife.png"));
-//        livesPanel.add(Box.createHorizontalStrut(10));
-//        livesPanel.add(pacmanLive1);
-//        livesPanel.add(Box.createHorizontalStrut(10));
-//        livesPanel.add(pacmanLive2);
-//        livesPanel.add(Box.createHorizontalStrut(10));
-//        livesPanel.add(pacmanLive3);
         foodPanel = new JPanel();
         foodPanel.setBackground(Color.BLACK);
         foodPanel.setLayout(new GridLayout(1, 1));
@@ -106,12 +134,13 @@ public class Game extends JFrame {
         mainGame.add(bottomPanel, BorderLayout.SOUTH);
         //mainGame.add(board.getBoardPanel(), BorderLayout.CENTER);
         mainGame.add(board.getBoardPanel(), BorderLayout.CENTER);
-        mainGame.add(currentScore, BorderLayout.NORTH);
+        mainGame.add(topPanel, BorderLayout.NORTH);
 
         mainGame.setBackground(Color.BLACK);
         this.add(mainGame);
         this.setLocationRelativeTo(null);
     }
+
 
     public void updateLivesPanel() {
         livesPanel.removeAll();
