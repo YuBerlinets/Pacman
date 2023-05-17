@@ -11,7 +11,7 @@ public class Score extends JPanel {
         this.setLayout(new BorderLayout());
         this.setBackground(Color.BLACK);
 
-        JLabel scoreTitle = new JLabel("View.Score:");
+        JLabel scoreTitle = new JLabel("Score:");
         scoreTitle.setFont(new Font("sarif", Font.BOLD, 32));
         scoreTitle.setForeground(Color.WHITE);
         JPanel titlePanel = new JPanel();

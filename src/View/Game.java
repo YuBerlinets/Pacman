@@ -52,6 +52,8 @@ public class Game extends JFrame {
 
         //initialising board
         board = new Board(height, width, this);
+
+
         topPanel.add(currentScore, BorderLayout.WEST);
         topPanel.add(currentTime,BorderLayout.EAST);
         //updating score

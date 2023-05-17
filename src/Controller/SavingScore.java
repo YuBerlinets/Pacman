@@ -12,10 +12,12 @@ public class SavingScore extends JFrame {
     private Statistics statistics;
     private JTextField textField;
     private String textName;
-    private String pathToFile = "resources/statistics.txt";
+
 
     public SavingScore(Board board) {
         this.statistics = new Statistics();
+        this.setTitle("Pacman - Game Over");
+        this.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         setSize(300, 300);
         setBackground(Color.BLACK);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -55,7 +57,7 @@ public class SavingScore extends JFrame {
                 System.out.println(statistics.getStats().getModel().getElementAt(i));
             }
             statistics.addPersonScore(playerScore);
-            saveDataToFile(playerScore);
+//            saveDataToFile(playerScore);
             board.getGameClass().dispose();
             new Launch();
 //            ((Model.StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
@@ -83,16 +85,6 @@ public class SavingScore extends JFrame {
 
     public Statistics getStatistics() {
         return statistics;
-    }
-
-    private void saveDataToFile(PlayerScore playerScore) {
-        try {
-            ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(pathToFile, true));
-            out.writeObject(playerScore);
-            out.close();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
     }
 
 

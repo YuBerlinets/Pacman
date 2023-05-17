@@ -1,9 +1,6 @@
 package Controller;
 
-import Model.BoardGenerator;
-import Model.Ghost;
-import Model.Pacman;
-import Model.PacmanMovement;
+import Model.*;
 import View.Game;
 
 import javax.imageio.ImageIO;
@@ -45,7 +42,9 @@ public class Board extends AbstractTableModel {
         this.countSmallPoints = 0;
         this.score = 0;
         boardGenerator = new BoardGenerator();
-        board = boardGenerator.generateBoard(height, width);
+//        board = boardGenerator.generateBoard(height, width);
+        PacmanBoardGenerator pacmanBoardGenerator = new PacmanBoardGenerator(height, width);
+        board = pacmanBoardGenerator.getBoard();
         this.gameClass = game;
 
         //set size of cell
@@ -57,33 +56,10 @@ public class Board extends AbstractTableModel {
             cellHeight = 30;
         }
 
-
-        //loading pics
-        String pathWall = "resources/walls/wall";
-        String pathFood = "resources/food/";
-        try {
-            wall1 = ImageIO.read(new File(pathWall + 1 + ".png"));
-            wall2 = ImageIO.read(new File(pathWall + 2 + ".png"));
-            wall3 = ImageIO.read(new File(pathWall + 3 + ".png"));
-            wall4 = ImageIO.read(new File(pathWall + 4 + ".png"));
-            wall5 = ImageIO.read(new File(pathWall + 5 + ".png"));
-            wall6 = ImageIO.read(new File(pathWall + 6 + ".png"));
-            wall13 = ImageIO.read(new File(pathWall + 13 + ".png"));
-            ghostDoor = ImageIO.read(new File("resources/walls/ghost_door.png"));
-            smallPoint = ImageIO.read(new File(pathFood + "smallPoint.png"));
-            bigPoint = ImageIO.read(new File(pathFood + "bigPoint.png"));
-            cherry = ImageIO.read(new File(pathFood + "cherry.png"));
-            banana = ImageIO.read(new File(pathFood + "banana.png"));
-            blueberry = ImageIO.read(new File(pathFood + "blueberry.png"));
-            orange = ImageIO.read(new File(pathFood + "orange.png"));
-            apple = ImageIO.read(new File(pathFood + "apple.png"));
-
-
-        } catch (IOException e) {
-            System.out.println("Photo haven't been founded");
-        }
-
-        printBoard();
+        //loading images
+        initImages();
+        //printing array as map on the console
+//        printBoard();
 
         boardTable = new JTable(this);
         boardTable.setRowHeight(30);
@@ -115,21 +91,33 @@ public class Board extends AbstractTableModel {
 
         pacman = new Pacman(1, 1, this);
         redGhost = new Ghost("red", startPositionGhost1Y, startPositionGhost1X, this);
-        yellowGhost = new Ghost("yellow", startPositionGhost2Y, startPositionGhost2X, this);
-        blueGhost = new Ghost("blue", startPositionGhost3Y, startPositionGhost3X, this);
-
+        blueGhost = new Ghost("blue", 3, 10, this);
+        yellowGhost = new Ghost("yellow", 6, 6, this);
         //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
 
         //setting position for ghosts
-        board[redGhost.getY()][redGhost.getX()] = 15;
-        board[yellowGhost.getY()][yellowGhost.getX()] = 16;
-        board[blueGhost.getY()][blueGhost.getX()] = 17;
+//        board[redGhost.getY()][redGhost.getX()] = 15;
+//        board[yellowGhost.getY()][yellowGhost.getX()] = 16;
+        board[blueGhost.getX()][blueGhost.getY()] = 17;
 
+        boardTable.repaint();
         countSmallPoints = countSmallPoint(board);
         System.out.println("Numbers of points ot eat: " + countSmallPoints);
         win();
         collisionChecker();
+        printBoard();
+
+//        new Thread(() -> {
+//            while (true) {
+//                printBoard();
+//                try {
+//                    Thread.sleep(2000);
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }).start();
 
         boardPanel.setFocusable(true);
     }
@@ -140,8 +128,8 @@ public class Board extends AbstractTableModel {
 
     private int countSmallPoint(int[][] arr) {
         int count = 0;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
+        for (int i = 0; i < height - 1; i++) {
+            for (int j = 0; j < width - 1; j++) {
                 if (arr[i][j] == 9)
                     count++;
             }
@@ -209,6 +197,7 @@ public class Board extends AbstractTableModel {
                     board[redGhost.getY()][redGhost.getX()] = 0;
                     board[yellowGhost.getY()][yellowGhost.getX()] = 0;
                     board[blueGhost.getY()][blueGhost.getX()] = 0;
+                    board[pacman.getY()][pacman.getX()] = 0;
 
                     pacman.setY(startPositionPacmanY);
                     pacman.setX(startPositionPacmanX);
@@ -291,6 +280,32 @@ public class Board extends AbstractTableModel {
         return boardTable;
     }
 
+    public void initImages() {
+        String pathWall = "resources/walls/wall";
+        String pathFood = "resources/food/";
+        try {
+            wall1 = ImageIO.read(new File(pathWall + 1 + ".png"));
+            wall2 = ImageIO.read(new File(pathWall + 2 + ".png"));
+            wall3 = ImageIO.read(new File(pathWall + 3 + ".png"));
+            wall4 = ImageIO.read(new File(pathWall + 4 + ".png"));
+            wall5 = ImageIO.read(new File(pathWall + 5 + ".png"));
+            wall6 = ImageIO.read(new File(pathWall + 6 + ".png"));
+            wall13 = ImageIO.read(new File(pathWall + 13 + ".png"));
+            ghostDoor = ImageIO.read(new File("resources/walls/ghost_door.png"));
+            smallPoint = ImageIO.read(new File(pathFood + "smallPoint.png"));
+            bigPoint = ImageIO.read(new File(pathFood + "bigPoint.png"));
+            cherry = ImageIO.read(new File(pathFood + "cherry.png"));
+            banana = ImageIO.read(new File(pathFood + "banana.png"));
+            blueberry = ImageIO.read(new File(pathFood + "blueberry.png"));
+            orange = ImageIO.read(new File(pathFood + "orange.png"));
+            apple = ImageIO.read(new File(pathFood + "apple.png"));
+
+
+        } catch (IOException e) {
+            System.out.println("Photo haven't been founded");
+        }
+    }
+
     public void setValueAt(int value, int rowIndex, int columnIndex) {
         board[rowIndex][columnIndex] = value;
     }
@@ -356,30 +371,6 @@ public class Board extends AbstractTableModel {
 
     public Ghost getRedGhost() {
         return redGhost;
-    }
-
-    public BufferedImage getWall1() {
-        return wall1;
-    }
-
-    public BufferedImage getWall2() {
-        return wall2;
-    }
-
-    public BufferedImage getWall3() {
-        return wall3;
-    }
-
-    public BufferedImage getWall4() {
-        return wall4;
-    }
-
-    public BufferedImage getWall5() {
-        return wall5;
-    }
-
-    public BufferedImage getWall6() {
-        return wall6;
     }
 
     public int getCellHeight() {

@@ -18,6 +18,7 @@ public class Ghost {
     private int y;
     private boolean isRunning;
     private int[][] originalBoard;
+    private int ghostNumber;
     private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5, WALL6 = 6, WALL13 = 13,
             CHERRY = 21, BANANA = 22, ORANGE = 23, APPLE = 24, BLUEBERRY = 25;
 
@@ -27,19 +28,22 @@ public class Ghost {
         this.isRunning = true;
         this.board = board;
         this.originalBoard = Arrays.copyOf(board.getBoard(), board.getBoard().length);
-        originalBoard[x][y] = 14;
         ghostVul1 = new ImageIcon(ghostPath + "vulGhost1.png");
         ghostVul2 = new ImageIcon(ghostPath + "vulGhost2.png");
         if (color.equals("red")) {
             this.ghostIcon1 = new ImageIcon(ghostPath + "redGhost1.png");
             this.ghostIcon2 = new ImageIcon(ghostPath + "redGhost2.png");
+            this.ghostNumber = 15;
         } else if (color.equals("blue")) {
             this.ghostIcon1 = new ImageIcon(ghostPath + "blueGhost1.png");
             this.ghostIcon2 = new ImageIcon(ghostPath + "blueGhost2.png");
+            this.ghostNumber = 17;
         } else {
             this.ghostIcon1 = new ImageIcon(ghostPath + "yellowGhost1.png");
             this.ghostIcon2 = new ImageIcon(ghostPath + "yellowGhost2.png");
+            this.ghostNumber = 16;
         }
+        originalBoard[x][y] = ghostNumber;
 
         currentGhost = ghostIcon1;
         changingAppearance();
@@ -117,36 +121,21 @@ public class Ghost {
                 board.getBoard()[newY][newX] != WALL13;
     }
 
-    //    private void updatePosition(int newY, int newX, int[][] originalBoard) {
-//        if (newY == y && newX == x) {
-//            return;
-//        }
-//        int oldY = y;
-//        int oldX = x;
-//        int prevValueTable = originalBoard[y][x];
-//        y = newY;
-//        x = newX;
-//        board.setValueAt(15, newY, newX);
-//        board.setValueAt(prevValueTable, oldY, oldX);
-//    }
 
     private void updatePosition(int newY, int newX, int[][] originalBoard) {
         if (newY == y && newX == x) {
             return;
         }
         int prevValueTable = originalBoard[newY][newX];
-        originalBoard[newY][newX] = 15;
+//        originalBoard[newY][newX] = ghostNumber;
         int prevValueGhost = originalBoard[y][x];
         originalBoard[y][x] = prevValueTable;
         y = newY;
         x = newX;
-        board.setValueAt(15, newY, newX);
+        board.setValueAt(ghostNumber, newY, newX);
         board.setValueAt(prevValueGhost, y, x);
     }
 
-    private boolean shouldSpawnUpgrade() {
-        return Math.random() < 0.25;
-    }
 
     private void spawnUpgrade(int y, int x) {
         int upgradeType = getRandomUpgradeType();
