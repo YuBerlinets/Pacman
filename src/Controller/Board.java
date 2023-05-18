@@ -2,6 +2,7 @@ package Controller;
 
 import Model.*;
 import View.Game;
+import View.Launch;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -12,6 +13,7 @@ import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.*;
 
 public class Board extends AbstractTableModel {
     private JPanel boardPanel;
@@ -24,6 +26,7 @@ public class Board extends AbstractTableModel {
     private Pacman pacman;
     private int score;
     private int cellHeight, cellWidth;
+    private int[][] boostBoard;
     private BufferedImage wall1, wall2, wall3, wall4, wall5, wall6, wall13, ghostDoor;
     private BufferedImage smallPoint, bigPoint, cherry, banana, orange, apple, blueberry;
     private BoardGenerator boardGenerator;
@@ -31,6 +34,9 @@ public class Board extends AbstractTableModel {
     private Ghost redGhost;
     private Ghost yellowGhost;
     private Ghost blueGhost;
+    private int CHERRY = 21, BANANA = 22, ORANGE = 23, APPLE = 24, BLUEBERRY = 25;
+    public Set<Point> boostLocations = new HashSet<>();
+
     private int startPositionPacmanX, startPositionPacmanY,
             startPositionGhost1X, startPositionGhost1Y,
             startPositionGhost2X, startPositionGhost2Y,
@@ -46,9 +52,12 @@ public class Board extends AbstractTableModel {
         PacmanBoardGenerator pacmanBoardGenerator = new PacmanBoardGenerator(height, width);
         board = pacmanBoardGenerator.getBoard();
         this.gameClass = game;
-
+        boostBoard = new int[height][width];
         //set size of cell
-        if (height > 50 || width > 50) {
+        if (height > 70 || width > 70) {
+            cellWidth = 15;
+            cellHeight = 15;
+        } else if (height > 30 || width > 30) {
             cellWidth = 20;
             cellHeight = 20;
         } else {
@@ -89,36 +98,29 @@ public class Board extends AbstractTableModel {
         startPositionGhost3Y = 6;
         startPositionGhost3X = 2;
 
+
+
         pacman = new Pacman(1, 1, this);
         redGhost = new Ghost("red", startPositionGhost1Y, startPositionGhost1X, this);
-        blueGhost = new Ghost("blue", 3, 10, this);
+        blueGhost = new Ghost("blue", startPositionGhost3Y, startPositionGhost3X, this);
         yellowGhost = new Ghost("yellow", 6, 6, this);
+
         //setting position for pacman
         board[pacman.getY()][pacman.getX()] = 7;
 
         //setting position for ghosts
 //        board[redGhost.getY()][redGhost.getX()] = 15;
 //        board[yellowGhost.getY()][yellowGhost.getX()] = 16;
-        board[blueGhost.getX()][blueGhost.getY()] = 17;
-
+//        board[startPositionGhost3Y][startPositionGhost3X] = 17;
         boardTable.repaint();
         countSmallPoints = countSmallPoint(board);
         System.out.println("Numbers of points ot eat: " + countSmallPoints);
         win();
         collisionChecker();
+        boostChecker();
         printBoard();
-
-//        new Thread(() -> {
-//            while (true) {
-//                printBoard();
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//        }).start();
-
+        redGhost.spawnBoost();
+        yellowGhost.spawnBoost();
         boardPanel.setFocusable(true);
     }
 
@@ -137,51 +139,56 @@ public class Board extends AbstractTableModel {
         return count;
     }
 
-    private class PacmanKeyListener extends KeyAdapter {
-        JFrame mainFrame;
+    public void addBoost(int boostType, int y, int x) {
+        this.boostBoard[y][x] = boostType;
+        boostLocations.add(new Point(x, y));
+    }
 
-        PacmanKeyListener(JFrame mainFrame) {
-            this.mainFrame = mainFrame;
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-            if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
-                getPacman().death();
-                getRedGhost().stop();
-                getYellowGhost().stop();
-                getBlueGhost().stop();
-                mainFrame.dispose();
-            } else {
-                switch (e.getKeyCode()) {
-                    case KeyEvent.VK_LEFT:
-                        pacman.setPacmanMovement(PacmanMovement.LEFT);
-                        System.out.println("Left " + e.getKeyCode());
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        pacman.setPacmanMovement(PacmanMovement.RIGHT);
-                        System.out.println("right " + e.getKeyCode());
-                        break;
-                    case KeyEvent.VK_UP:
-                        pacman.setPacmanMovement(PacmanMovement.UP);
-                        System.out.println("up " + e.getKeyCode());
-                        break;
-                    case KeyEvent.VK_DOWN:
-                        pacman.setPacmanMovement(PacmanMovement.DOWN);
-                        System.out.println("down " + e.getKeyCode());
-                        break;
+    public void boostChecker() {
+        Thread boostThread = new Thread(() -> {
+            while (pacman.isAlive()) {
+                int boostType = boostBoard[pacman.getY()][pacman.getX()];
+                if (boostType == CHERRY) {
+                    System.out.println("Speed boost was applied");
+                    pacman.speedBoost();
                 }
-                //boardTable.repaint();
-                System.out.println(pacman.getCurrentPac());
+                if (boostType == BANANA) {
+                    System.out.println("One more life was added");
+                    pacman.plusLife();
+                    gameClass.updateLivesPanel();
+                }
+                if (boostType == BLUEBERRY) {
+                    System.out.println("Pacman is invulnerable for 5 sec");
+                    pacman.invulnerable();
+                }
+                if (boostType == ORANGE) {
+                    System.out.println("More 25 sec was added to the timer");
+                    addTime();
+                }
+                if (boostType == APPLE) {
+                    System.out.println("For 10 sec pacman receives 2x points");
+                    pacman.pointsBoost();
+                }
+
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread was interrupted");
+                }
             }
-        }
+        });
+        boostThread.start();
+    }
+
+    public void addTime() {
+        gameClass.setTime(gameClass.getTime() + 25);
     }
 
     public void collisionChecker() {
         Thread collisionCheckerThread = new Thread(() -> {
             while (pacman.isAlive()) {
                 if ((pacman.getX() == redGhost.getX() || pacman.getX() == yellowGhost.getX() || pacman.getX() == blueGhost.getX())
-                        && (pacman.getY() == redGhost.getY() || pacman.getY() == yellowGhost.getY() || pacman.getY() == blueGhost.getY())) {
+                        && (pacman.getY() == redGhost.getY() || pacman.getY() == yellowGhost.getY() || pacman.getY() == blueGhost.getY()) && !pacman.isInvulnerable()) {
                     System.out.println("Collision");
                     pacman.minusLife();
                     gameClass.updateLivesPanel();
@@ -198,7 +205,7 @@ public class Board extends AbstractTableModel {
                     board[yellowGhost.getY()][yellowGhost.getX()] = 0;
                     board[blueGhost.getY()][blueGhost.getX()] = 0;
                     board[pacman.getY()][pacman.getX()] = 0;
-
+                    boardTable.repaint();
                     pacman.setY(startPositionPacmanY);
                     pacman.setX(startPositionPacmanX);
                     redGhost.setY(startPositionGhost1Y);
@@ -230,6 +237,9 @@ public class Board extends AbstractTableModel {
                 if (countSmallPoints == 0) {
                     SavingScore savingScore = new SavingScore(this);
                     pacman.death();
+                    blueGhost.stop();
+                    redGhost.stop();
+                    yellowGhost.stop();
                     break;
                 }
                 try {
@@ -368,6 +378,52 @@ public class Board extends AbstractTableModel {
                 return null;
         }
     }//CHERRY = 21, BANANA = 22, ORANGE = 23, APPLE = 24, BLUEBERRY = 25;
+
+    private class PacmanKeyListener extends KeyAdapter {
+        JFrame mainFrame;
+
+        PacmanKeyListener(JFrame mainFrame) {
+            this.mainFrame = mainFrame;
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == 77) {
+                pacman.getBoard().printBoard();
+//                //for debug
+//                for (int i = 0; i < boostBoard.length; i++) {
+//                    for (int j = 0; j < boostBoard[i].length; j++) {
+//                        System.out.print(boostBoard[i][j] + " ");
+//                    }
+//                    System.out.println();
+//                }
+            }
+            if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                System.out.println("CTRL + SHIFT + Q hotkey was pressed");
+                getPacman().death();
+                getRedGhost().stop();
+                getYellowGhost().stop();
+                getBlueGhost().stop();
+                new Launch();
+                mainFrame.dispose();
+            } else {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                        pacman.setPacmanMovement(PacmanMovement.LEFT);
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                        pacman.setPacmanMovement(PacmanMovement.RIGHT);
+                        break;
+                    case KeyEvent.VK_UP:
+                        pacman.setPacmanMovement(PacmanMovement.UP);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                        pacman.setPacmanMovement(PacmanMovement.DOWN);
+                        break;
+                }
+            }
+        }
+    }
 
     public Ghost getRedGhost() {
         return redGhost;

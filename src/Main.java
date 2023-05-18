@@ -1,7 +1,11 @@
 import View.Launch;
 
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
-        new Launch();
+        SwingUtilities.invokeLater(() -> {
+            new Launch();
+        });
     }
 }

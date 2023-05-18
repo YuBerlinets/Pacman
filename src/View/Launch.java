@@ -35,6 +35,8 @@ public class Launch {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.isControlDown() && e.isShiftDown() && e.getKeyCode() == KeyEvent.VK_Q) {
+                    System.out.println("CTRL + SHIFT + Q hotkey was pressed");
+                    new Launch();
                     window.dispose();
                 }
             }
@@ -106,10 +108,6 @@ public class Launch {
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
-    }
-
-    public JFrame getWindow() {
-        return window;
     }
 
 }

@@ -6,7 +6,6 @@ import View.Launch;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
-import java.io.*;
 
 public class SavingScore extends JFrame {
     private Statistics statistics;
@@ -20,7 +19,7 @@ public class SavingScore extends JFrame {
         this.setIconImage(new ImageIcon("resources/pacman_logo.png").getImage());
         setSize(300, 300);
         setBackground(Color.BLACK);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         JPanel panel = new JPanel();
 
         panel.setBackground(Color.BLACK);
@@ -51,20 +50,20 @@ public class SavingScore extends JFrame {
         submitButton.setFont(new Font("sarif", Font.PLAIN, 16));
         submitButton.addActionListener(e -> {
             textName = textField.getText();
-            System.out.println(statistics.getStats());
             PlayerScore playerScore = new PlayerScore(textName, board.getScore());
-            for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
-                System.out.println(statistics.getStats().getModel().getElementAt(i));
-            }
+            //check before adding(debug)
+//            for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
+//                System.out.println(statistics.getStats().getModel().getElementAt(i));
+//            }
             statistics.addPersonScore(playerScore);
-//            saveDataToFile(playerScore);
             board.getGameClass().dispose();
             new Launch();
-//            ((Model.StatsListModel) statistics.getStats().getModel()).addPlayerScore(playerScore);
             statistics.getStats().repaint();
-            for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
-                System.out.println(statistics.getStats().getModel().getElementAt(i));
-            }
+
+            //check after adding to the list (debug)
+//            for (int i = 0; i < statistics.getStats().getModel().getSize(); i++) {
+//                System.out.println(statistics.getStats().getModel().getElementAt(i));
+//            }
             dispose();
         });
 

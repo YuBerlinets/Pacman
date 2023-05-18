@@ -18,7 +18,9 @@ public class Pacman {
     private Map<ImageIcon, ImageIcon> pacImages;
     private int lives;
     private boolean stuck;
+    private int addingScore;
     private boolean alive;
+    private boolean invulnerable;
     private long speed = 400;
 
     private final int PACMAN = 7, SMALL_POINT = 9, WALL1 = 1, WALL2 = 2, WALL3 = 3, WALL4 = 4, WALL5 = 5,
@@ -31,6 +33,7 @@ public class Pacman {
         this.stuck = false;
         this.alive = true;
         this.lives = 3;
+        this.addingScore = 10;
         initImages();
 
         //store images in hashmap to animate eating
@@ -47,7 +50,7 @@ public class Pacman {
         Thread threadPacMoving = new Thread(() -> {
             while (this.isAlive()) {
                 move();
-//                this.board.getBoardPanel().repaint();
+                this.board.getBoardPanel().repaint();
                 try {
                     Thread.sleep(speed);
                 } catch (InterruptedException e) {
@@ -58,9 +61,6 @@ public class Pacman {
         threadPacMoving.start();
         getPacAnim();
 
-        if (!this.isAlive()) {
-            threadPacMoving.interrupt();
-        }
     }
 
     private void initImages() {
@@ -80,37 +80,40 @@ public class Pacman {
     }
 
 
-    //    public synchronized void getPacAnim() {
-//        final long eatingSpeed = 150;
-//        Thread threadPacmanAnimation = new Thread(() -> {
-//            while (this.isAlive()) {
-//                if (!this.isStuck() && currentPac != pacDEF) {
-//                    ImageIcon tmp;
-//                    tmp = currentPac;
-//                    currentPac = pacDEF;
-//                    board.getBoardTable().repaint();
-//                    try {
-//                        Thread.sleep(eatingSpeed);
-//                    } catch (InterruptedException e) {
-//                        System.out.println("Thread was interrupted");
-//                    }
-//                    currentPac = tmp;
-//                    board.getBoardTable().repaint();
-//                    try {
-//                        Thread.sleep(eatingSpeed);
-//                    } catch (InterruptedException e) {
-//                        System.out.println("Thread was interrupted");
-//                    }
-//                }
-//                try {
-//                    Thread.sleep(1);
-//                } catch (InterruptedException e) {
-//                    System.out.println("Thread was interrupted");
-//                }
-//            }
-//        });
-//        threadPacmanAnimation.start();
-//    }
+    public void speedBoost() {
+        this.setSpeed(250);
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            System.out.println("Thread sleep was interrupted");
+        }
+        this.setSpeed(400);
+    }
+
+    public void plusLife() {
+        setLives(getLives() + 1);
+    }
+
+    public  void invulnerable() {
+        invulnerable = true;
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            System.out.println("Thread sleep was interrupted");
+        }
+        invulnerable = false;
+    }
+
+    public void pointsBoost() {
+        addingScore = 20;
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            System.out.println("Thread sleep was interrupted");
+        }
+        addingScore = 10;
+    }
+
     public synchronized void getPacAnim() {
         final long animationSpeed = 200;
         Thread threadPacmanAnimation = new Thread(() -> {
@@ -174,11 +177,10 @@ public class Pacman {
         board.setValueAt(0, y, x);
         if (board.getBoard()[newY][newX] == SMALL_POINT) {
             board.setCountSmallPoints(board.getCountSmallPoints() - 1);
-            board.setScore(board.getScore() + 10);
+            board.setScore(board.getScore() + addingScore);
         }
 //        System.out.println(board.getCountSmallPoints());
         currentPac = (newY < y) ? pacUP : (newY > y) ? pacDOWN : (newX < x) ? pacLEFT : pacRIGHT;
-        System.out.println(currentPac);
         y = newY;
         x = newX;
         board.setValueAt(PACMAN, y, x);
@@ -282,5 +284,17 @@ public class Pacman {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public void setSpeed(long speed) {
+        this.speed = speed;
+    }
+
+    public boolean isInvulnerable() {
+        return invulnerable;
+    }
+
+    public void setLives(int lives) {
+        this.lives = lives;
     }
 }

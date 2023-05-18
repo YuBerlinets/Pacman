@@ -3,6 +3,7 @@ package Model;
 import Controller.Board;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -13,9 +14,11 @@ public class Ghost {
     private String ghostPath = "resources/ghosts/";
     private Board board;
     private int[] upgrades = {21, 22, 23, 24, 25, 26};
-
+    private final int UPGRADE_PROBABILITY = 25; // 25% probability of spawning upgrade
     private int x;
     private int y;
+    private long timeElapsed = 0;
+    private double boostProbability = 0.25;
     private boolean isRunning;
     private int[][] originalBoard;
     private int ghostNumber;
@@ -43,13 +46,13 @@ public class Ghost {
             this.ghostIcon2 = new ImageIcon(ghostPath + "yellowGhost2.png");
             this.ghostNumber = 16;
         }
-        originalBoard[x][y] = ghostNumber;
+        originalBoard[y][x] = ghostNumber;
 
         currentGhost = ghostIcon1;
         changingAppearance();
         move();
     }
-
+    //thread that swaping image of ghost
     public void changingAppearance() {
         new Thread(() -> {
             while (isRunning) {
@@ -98,7 +101,6 @@ public class Ghost {
                     updatePosition(newY, newX, originalBoard);
                     board.getBoardTable().repaint();
                 }
-//                System.out.println(getX() + " " + getY());
 
                 try {
                     Thread.sleep(400);
@@ -107,6 +109,46 @@ public class Ghost {
                 }
             }
         }).start();
+    }
+
+    public void spawnBoost() {
+        Random random = new Random();
+        Thread boostThread = new Thread(() -> {
+            while (isRunning) {
+                timeElapsed += 400;
+
+                if (timeElapsed >= 5000) {
+                    timeElapsed = 0;
+
+                    if (random.nextDouble() <= boostProbability) {
+                        int upgradeX = 0;
+                        int upgradeY = 0;
+                        int upgrade = upgrades[random.nextInt(upgrades.length)];
+                        do {
+                            upgradeX = random.nextInt(board.getBoard()[0].length);
+                            upgradeY = random.nextInt(board.getBoard().length);
+                        } while (!isValidUpgradeCell(upgradeY, upgradeX));
+                        board.addBoost(upgrade,upgradeY,upgradeX);
+                        board.setValueAt(upgrade, upgradeY, upgradeX);
+                    }
+                }
+                try {
+                    Thread.sleep(400);
+                } catch (InterruptedException e) {
+                    System.out.println("Thread was interrupted");
+                }
+            }
+        });
+        boostThread.start();
+    }
+
+    private boolean isValidUpgradeCell(int y, int x) {
+        int cellValue = board.getBoard()[y][x];
+        return cellValue != WALL1 && cellValue != WALL2 && cellValue != WALL3 &&
+                cellValue != WALL4 && cellValue != WALL5 && cellValue != WALL6 &&
+                cellValue != WALL13 && cellValue != PACMAN && cellValue != 15 && cellValue != 16 &&
+                cellValue != 17 && cellValue != CHERRY && cellValue != BANANA && cellValue != ORANGE &&
+                cellValue != APPLE && cellValue != BLUEBERRY;
     }
 
     private boolean isValidMove(int newY, int newX) {
@@ -136,19 +178,6 @@ public class Ghost {
         board.setValueAt(prevValueGhost, y, x);
     }
 
-
-    private void spawnUpgrade(int y, int x) {
-        int upgradeType = getRandomUpgradeType();
-
-        board.setValueAt(upgradeType, y, x);
-    }
-
-    private int getRandomUpgradeType() {
-        int randomIndex = (int) (Math.random() * upgrades.length);
-        return upgrades[randomIndex];
-    }
-
-
     public void stop() {
         isRunning = false;
     }
@@ -157,21 +186,6 @@ public class Ghost {
         return currentGhost;
     }
 
-    public ImageIcon getGhostIcon1() {
-        return ghostIcon1;
-    }
-
-    public ImageIcon getGhostIcon2() {
-        return ghostIcon2;
-    }
-
-    public ImageIcon getGhostVul1() {
-        return ghostVul1;
-    }
-
-    public ImageIcon getGhostVul2() {
-        return ghostVul2;
-    }
 
     public int getX() {
         return x;

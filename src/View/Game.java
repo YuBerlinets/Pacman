@@ -45,7 +45,7 @@ public class Game extends JFrame {
         currentScore.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentScore.setForeground(Color.YELLOW);
 
-        time = 120;
+        time = 60;
         currentTime = new JLabel("Time: " + time);
         currentTime.setFont(new Font("SansSerif", Font.BOLD, 22));
         currentTime.setForeground(Color.YELLOW);
@@ -53,9 +53,10 @@ public class Game extends JFrame {
         //initialising board
         board = new Board(height, width, this);
 
-
+        topPanel.add(Box.createHorizontalStrut(10));
         topPanel.add(currentScore, BorderLayout.WEST);
         topPanel.add(currentTime,BorderLayout.EAST);
+        topPanel.add(Box.createHorizontalStrut(10));
         //updating score
         Thread scoreThread = new Thread(() -> {
             while (board.getPacman().isAlive()) {
@@ -78,6 +79,9 @@ public class Game extends JFrame {
                     if(time == 0){
                         SavingScore savingScore = new SavingScore(board);
                         board.getPacman().death();
+                        board.getRedGhost().stop();
+                        board.getYellowGhost().stop();
+                        board.getBlueGhost().stop();
                         break;
                     }
                     Thread.sleep(1000);
@@ -126,8 +130,8 @@ public class Game extends JFrame {
         foodPanel = new JPanel();
         foodPanel.setBackground(Color.BLACK);
         foodPanel.setLayout(new GridLayout(1, 1));
-        JLabel cherry = new JLabel(new ImageIcon("resources/food/cherry.png"));
-        foodPanel.add(cherry);
+//        JLabel cherry = new JLabel(new ImageIcon("resources/food/cherry.png"));
+//        foodPanel.add(cherry);
 
         bottomPanel.add(livesPanel);
         bottomPanel.add(foodPanel);
@@ -153,6 +157,14 @@ public class Game extends JFrame {
         }
         livesPanel.revalidate();
         livesPanel.repaint();
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public int getTime() {
+        return time;
     }
 }
 
